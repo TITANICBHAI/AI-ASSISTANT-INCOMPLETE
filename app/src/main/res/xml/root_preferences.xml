@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/pref_category_general">
+        <SwitchPreferenceCompat
+            app:key="enable_voice"
+            app:title="@string/pref_title_enable_voice"
+            app:summary="@string/pref_description_enable_voice"
+            app:defaultValue="true" />
+            
+        <SwitchPreferenceCompat
+            app:key="enable_overlay"
+            app:title="@string/pref_title_enable_overlay"
+            app:summary="@string/pref_description_enable_overlay"
+            app:defaultValue="true" />
+            
+        <ListPreference
+            app:key="voice_language"
+            app:title="@string/pref_title_voice_language"
+            app:defaultValue="en"
+            app:entries="@array/voice_language_entries"
+            app:entryValues="@array/voice_language_values"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory app:title="@string/pref_category_security">
+        <SwitchPreferenceCompat
+            app:key="enable_anti_detection"
+            app:title="@string/pref_title_anti_detection"
+            app:summary="@string/pref_description_anti_detection"
+            app:defaultValue="true" />
+            
+        <SwitchPreferenceCompat
+            app:key="enable_secure_storage"
+            app:title="@string/pref_title_secure_storage"
+            app:summary="@string/pref_description_secure_storage"
+            app:defaultValue="true" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory app:title="@string/pref_category_advanced">
+        <SeekBarPreference
+            app:key="ai_level"
+            app:title="@string/pref_title_ai_level"
+            app:defaultValue="3"
+            app:min="1"
+            android:max="5"
+            app:showSeekBarValue="true" />
+            
+        <ListPreference
+            app:key="performance_mode"
+            app:title="@string/pref_title_performance_mode"
+            app:defaultValue="balanced"
+            app:entries="@array/performance_mode_entries"
+            app:entryValues="@array/performance_mode_values"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory app:title="@string/pref_category_about">
+        <Preference
+            app:key="version"
+            app:title="@string/pref_title_version"
+            app:summary="1.0.0" />
+            
+        <Preference
+            app:key="licenses"
+            app:title="@string/pref_title_licenses" />
+            
+        <Preference
+            app:key="privacy_policy"
+            app:title="@string/pref_title_privacy_policy" />
+    </PreferenceCategory>
+</PreferenceScreen>

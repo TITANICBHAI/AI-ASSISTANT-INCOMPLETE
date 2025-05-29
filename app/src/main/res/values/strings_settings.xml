@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation Additional -->
+    <string name="nav_voice">Voice</string>
+    <string name="nav_research">Research</string>
+    <string name="nav_pdf">PDF</string>
+    
+    <!-- Accessibility Service -->
+    <string name="detection_service_description">Game Assistant Detection Service</string>
+    
+    <!-- Settings -->
+    <string name="setting_use_gpu">Use GPU for detection</string>
+    <string name="setting_detection_sensitivity">Detection Sensitivity</string>
+    <string name="setting_save_screenshots">Save Screenshots</string>
+    <string name="settings_battery_saver">Battery Saver Mode</string>
+    
+    <!-- Preferences -->
+    <string name="pref_category_general">General</string>
+    <string name="pref_title_enable_voice">Enable Voice Commands</string>
+    <string name="pref_description_enable_voice">Allow AI to listen and respond to voice commands</string>
+    <string name="pref_title_enable_overlay">Enable Game Overlay</string>
+    <string name="pref_description_enable_overlay">Show AI assistance overlay in supported games</string>
+    <string name="pref_title_voice_language">Voice Recognition Language</string>
+    
+    <string name="pref_category_security">Security</string>
+    <string name="pref_title_anti_detection">Anti-Detection Features</string>
+    <string name="pref_description_anti_detection">Prevent games from detecting the assistant</string>
+    <string name="pref_title_secure_storage">Secure Storage</string>
+    <string name="pref_description_secure_storage">Encrypt all stored data and profiles</string>
+    
+    <string name="pref_category_advanced">Advanced Settings</string>
+</resources>

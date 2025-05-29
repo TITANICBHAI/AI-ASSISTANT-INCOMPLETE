@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Game Enhancement -->
+    <string name="object_detection_description">Detect game objects in real-time</string>
+    <string name="advanced_controls">Advanced Controls</string>
+    <string name="advanced_controls_description">Enhanced gameplay controls</string>
+    <string name="auto_fire">Auto Fire</string>
+    <string name="auto_fire_description">Automatically fire weapons when targets are detected</string>
+    
+    <!-- Task Scheduler -->
+    <string name="task_scheduler">Task Scheduler</string>
+    <string name="no_tasks">No tasks scheduled</string>
+    <string name="add_new_task">Add New Task</string>
+    
+    <!-- Error Stats -->
+    <string name="error_stats">Error Statistics</string>
+    <string name="total_errors">Total Errors</string>
+    <string name="gesture_errors">Gesture Errors</string>
+    <string name="ui_detection_errors">UI Detection Errors</string>
+    <string name="game_state_errors">Game State Errors</string>
+    <string name="recent_errors">Recent Errors</string>
+    <string name="clear_errors">Clear Errors</string>
+    
+    <!-- Misc Game -->
+    <string name="supported_game">Supported Game</string>
+    <string name="confidence">Confidence</string>
+    <string name="app_logo">App Logo</string>
+    <string name="app_description">Advanced AI Game Assistant</string>
+</resources>

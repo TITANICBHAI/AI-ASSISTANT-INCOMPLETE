@@ -1,0 +1,53 @@
+Initialized native services in: /home/runner/.gradle/native
+Initialized jansi services in: /home/runner/.gradle/native
+The client will now receive all logging from the daemon (pid: 24419). The daemon log file: /home/runner/.gradle/daemon/7.4.2/daemon-24419.out.log
+Starting 2nd build in daemon [uptime: 6.632 secs, performance: 97%]
+Closing daemon's stdin at end of input.
+The daemon will no longer process any standard input.
+Using 6 worker leases.
+Configuration on demand is an incubating feature.
+Not watching /home/runner/workspace since the file system is not supported
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/home/runner/workspace/settings.gradle'.
+Projects loaded. Root project using build file '/home/runner/workspace/build.gradle'.
+Included projects: [root project 'AIAssistant', project ':app']
+
+> Configure project :
+Evaluating root project 'AIAssistant' using build file '/home/runner/workspace/build.gradle'.
+
+> Configure project :app
+Evaluating project ':app' using build file '/home/runner/workspace/app/build.gradle'.
+Compiling build file '/home/runner/workspace/app/build.gradle' using SubsetScriptTransformer.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/runner/workspace/app/build.gradle' line: 84
+
+* What went wrong:
+Could not compile build file '/home/runner/workspace/app/build.gradle'.
+> startup failed:
+  build file '/home/runner/workspace/app/build.gradle': 84: Unexpected input: '{\n        abortOnError false\n        checkReleaseBuilds false\n        disable 'InvalidPackage', 'MissingTranslation'\n    }\n    \n    // NDK configuration for native security components\n// //     externalNativeBuild {\n// //         cmake {\n// //             path "src/main/cpp/CMakeLists.txt"\n//         }\n    }' @ line 84, column 5.
+         }
+         ^
+  
+  1 error
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4.2/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD FAILED in 1s
+Some of the file system contents retained in the virtual file system are on file systems that Gradle doesn't support watching. The relevant state was discarded to ensure changes to these locations are properly detected. You can override this by explicitly enabling file system watching.

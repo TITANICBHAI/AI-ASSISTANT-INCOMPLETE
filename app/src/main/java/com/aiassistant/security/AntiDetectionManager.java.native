@@ -1,0 +1,16 @@
+    static {
+        try {
+            System.loadLibrary("native-lib");
+        } catch (Exception e) {
+            if (ENABLE_LOGGING) {
+                Log.e(TAG, "Failed to load native library: " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Get native security signature
+     * 
+     * @return A unique security signature
+     */
+    public native String getNativeSecuritySign();

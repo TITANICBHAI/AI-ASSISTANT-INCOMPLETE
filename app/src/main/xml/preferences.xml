@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="System Permissions"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="pref_accessibility_service"
+            android:title="Accessibility Service"
+            android:summary="Required for AI to interact with the screen"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_usage_stats"
+            android:title="Usage Statistics"
+            android:summary="Allow AI Assistant to monitor app usage"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_overlay_permission"
+            android:title="Display Overlays"
+            android:summary="Allow AI to display overlays on screen"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:key="pref_start_on_boot"
+            android:title="Start on Boot"
+            android:summary="Start AI Assistant when device boots"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+            
+        <SwitchPreferenceCompat
+            android:key="pref_background_service"
+            android:title="Background Service"
+            android:summary="Keep AI running in background"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="AI Operation Modes"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:key="pref_auto_takeover"
+            android:title="Auto Takeover"
+            android:summary="AI takes control after inactivity"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:key="pref_autonomous_mode"
+            android:title="Autonomous Mode"
+            android:summary="Full AI control and decision making"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:key="pref_copilot_mode"
+            android:title="Copilot Mode"
+            android:summary="AI assists user with suggestions"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Learning Settings"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:key="pref_video_learning"
+            android:title="Video Learning"
+            android:summary="AI learns from video content"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="pref_learning_rate"
+            android:title="Learning Rate"
+            android:summary="How quickly AI adapts to new patterns"
+            android:entries="@array/learning_rate_entries"
+            android:entryValues="@array/learning_rate_values"
+            android:defaultValue="2"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            android:key="pref_ai_memory"
+            android:title="Memory Usage"
+            android:summary="Amount of memory for AI models"
+            android:max="5"
+            android:defaultValue="3"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Advanced Settings"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:key="pref_algorithm_selection"
+            android:title="Primary Algorithm"
+            android:summary="Select main reinforcement learning algorithm"
+            android:entries="@array/algorithm_entries"
+            android:entryValues="@array/algorithm_values"
+            android:defaultValue="0"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_export_models"
+            android:title="Export AI Models"
+            android:summary="Save trained models to storage"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_import_models"
+            android:title="Import AI Models"
+            android:summary="Load saved models from storage"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_clear_ai_data"
+            android:title="Clear AI Data"
+            android:summary="Reset all AI learning data"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="About"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="pref_about"
+            android:title="About AI Assistant"
+            android:summary="Version 1.0"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

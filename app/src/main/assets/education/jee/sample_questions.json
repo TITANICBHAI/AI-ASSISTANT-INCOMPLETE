@@ -1,0 +1,58 @@
+{
+  "mathematics": [
+    {
+      "question": "Solve the quadratic equation: 2x² - 5x + 2 = 0",
+      "subject": "algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the derivative of f(x) = x³sin(x)",
+      "subject": "calculus",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a triangle ABC, if a = 3, b = 4, and c = 5, find the area of the triangle.",
+      "subject": "geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the value of integral from 0 to π/2 of sin(x)cos(x)dx",
+      "subject": "calculus",
+      "difficulty": "medium"
+    }
+  ],
+  "physics": [
+    {
+      "question": "A ball is thrown vertically upward with a velocity of 19.6 m/s. Find the maximum height reached by the ball. Take g = 9.8 m/s².",
+      "subject": "mechanics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A circuit contains a 10Ω resistor, a 5Ω resistor, and a 15Ω resistor connected in parallel. Find the equivalent resistance.",
+      "subject": "electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A particle executes simple harmonic motion with amplitude 5 cm and time period 2 seconds. Find the maximum velocity of the particle.",
+      "subject": "oscillations",
+      "difficulty": "medium"
+    }
+  ],
+  "chemistry": [
+    {
+      "question": "Calculate the pH of a 0.1M solution of acetic acid. The Ka of acetic acid is 1.8 × 10⁻⁵.",
+      "subject": "physical_chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Name the functional group present in CH₃COCH₃.",
+      "subject": "organic_chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Write the electronic configuration of Fe²⁺ ion. (Atomic number of Fe = 26)",
+      "subject": "inorganic_chemistry",
+      "difficulty": "medium"
+    }
+  ]
+}

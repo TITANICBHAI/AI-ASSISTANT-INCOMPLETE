@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/dashboardFragment"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="@string/nav_dashboard" />
+    <item
+        android:id="@+id/gamesFragment"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/nav_games" />
+    <item
+        android:id="@+id/aiModesFragment"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="@string/nav_ai_modes" />
+    <item
+        android:id="@+id/learningFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/nav_learning" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/nav_settings" />
+</menu>

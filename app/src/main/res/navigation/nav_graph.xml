@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.aiassistant.ui.main.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_main_to_settings"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_main_to_gaming"
+            app:destination="@id/gamingFragment" />
+        <action
+            android:id="@+id/action_main_to_voice"
+            app:destination="@id/voiceFragment" />
+        <action
+            android:id="@+id/action_main_to_camera"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.aiassistant.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settings_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gamingFragment"
+        android:name="com.aiassistant.ui.gaming.GamingFragment"
+        android:label="Gaming"
+        tools:layout="@layout/fragment_gaming">
+        <action
+            android:id="@+id/action_gaming_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/voiceFragment"
+        android:name="com.aiassistant.ui.voice.VoiceFragment"
+        android:label="Voice"
+        tools:layout="@layout/fragment_voice">
+        <action
+            android:id="@+id/action_voice_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.aiassistant.ui.camera.CameraFragment"
+        android:label="Camera"
+        tools:layout="@layout/fragment_camera">
+        <action
+            android:id="@+id/action_camera_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+</navigation>

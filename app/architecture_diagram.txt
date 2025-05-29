@@ -1,0 +1,45 @@
++---------------------------------------------+
+|                AIApplication                |
++---------------------------------------------+
+        |                  |                  |
+        v                  v                  v
++---------------+  +---------------+  +---------------+
+| AIStateManager|  |VideoLearning  |  |AppDatabase    |
+|               |  |Manager        |  |               |
++---------------+  +---------------+  +---------------+
+        |                                      |
+        v                                      v
++------------------+                  +------------------+
+| AI Algorithms    |                  | Database Entities|
+|------------------|                  |------------------|
+| MetaLearning     |                  | GameProfile      |
+| Q-Learning       |                  | LearningSession  |
+| Deep RL          |                  |                  |
+| PPO              |                  |                  |
++------------------+                  +------------------+
+                       ^
+                       |
+                       v
++---------------------------------------------+
+|          AIAccessibilityService              |
++---------------------------------------------+
+                       ^
+                       |
+                       v
++---------------------------------------------+
+|                 UI Layer                     |
+|---------------------------------------------|
+| MainActivity                                 |
+| ├── HomeFragment                            |
+| ├── GamesFragment                           |
+| ├── SettingsFragment                        |
+| └── LearningFragment                        |
++---------------------------------------------+
+
+AI Assistant Workflow:
+1. User selects mode (Auto, Learning, Copilot, Observation)
+2. AIStateManager coordinates the appropriate AI components
+3. VideoLearningManager processes game frames using ML models
+4. AI algorithms analyze the game state and decide actions
+5. AIAccessibilityService performs actions in the target game
+6. Learning data is saved to the database for future use

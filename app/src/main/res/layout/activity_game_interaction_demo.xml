@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Game Interaction Demo"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f0f0f0"
+        android:padding="8dp"
+        android:textSize="14sp"
+        android:minHeight="100dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/startServiceButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start Service"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/stopServiceButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop Service"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/autoPlaySwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auto-Play Mode"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Manual Interaction Tests"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tapButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tap Center"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/swipeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Swipe Up"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/comboButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Game Combo"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Instructions:"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1. Enable the Accessibility Service in Android Settings.\n2. Start the service and grant screen capture permissions.\n3. Open a game (e.g., Free Fire) and try the interaction features.\n4. Enable Auto-Play to let the AI take control." />
+
+</LinearLayout>

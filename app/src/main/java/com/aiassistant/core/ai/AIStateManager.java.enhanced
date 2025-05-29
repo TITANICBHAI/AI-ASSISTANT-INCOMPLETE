@@ -1,0 +1,788 @@
+package com.aiassistant.core.ai;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.aiassistant.core.ai.algorithms.MetaLearningAlgorithm;
+import com.aiassistant.core.ai.algorithms.RLAlgorithm;
+import com.aiassistant.data.models.AIAction;
+import com.aiassistant.data.models.GameState;
+import com.aiassistant.security.AntiDetectionInitializer;
+import com.aiassistant.security.SecurityContext;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Manages the AI state and operations with enhanced security integration
+ * 
+ * This manager coordinates AI operations while maintaining tight integration
+ * with the anti-detection security system to ensure maximum protection against
+ * detection and analysis, particularly when the AI is actively controlling
+ * game interactions.
+ */
+public class AIStateManager {
+    
+    private static final boolean ENABLE_NATIVE = true;
+
+    // Load native library
+    static {
+        try {
+            System.loadLibrary("native-lib");
+            Log.d("AIStateManager", "Native library loaded");
+        } catch (Exception e) {
+            Log.e("AIStateManager", "Failed to load native library: " + e.getMessage());
+        }
+    }
+    private static final String TAG = "AIStateManager";
+    
+    // Operational modes
+    public static final int MODE_AUTO = 0;      // AI fully controls
+    public static final int MODE_LEARNING = 1;  // AI learns from user
+    public static final int MODE_COPILOT = 2;   // AI suggests actions
+    public static final int MODE_PASSIVE = 3;   // AI only observes
+    
+    /**
+     * AI state enumeration
+     */
+    public enum AIState {
+        INACTIVE,
+        INITIALIZING,
+        ACTIVE,
+        LEARNING,
+        COPILOT,
+        OBSERVING,
+        EXECUTING_ACTION,
+        ANALYZING,
+        ERROR,
+        SAVING
+    }
+    
+    // Singleton instance
+    private static AIStateManager instance;
+    
+    // Current state and mode
+    private AIState currentState = AIState.INACTIVE;
+    private int currentMode = MODE_PASSIVE;
+    
+    // Current game package
+    private String currentGamePackage;
+    
+    // Context reference
+    private Context context;
+    
+    // Meta-learning algorithm
+    private MetaLearningAlgorithm metaLearningAlgorithm;
+    
+    // Map of game packages to algorithms
+    private Map<String, List<RLAlgorithm>> algorithmMap = new HashMap<>();
+    
+    // Current selected algorithm
+    private RLAlgorithm currentAlgorithm;
+    
+    // Listeners
+    private final List<AIStateListener> listeners = new ArrayList<>();
+    
+    // Action history for learning
+    private final List<AIAction> actionHistory = new ArrayList<>();
+    
+    // Current game state
+    private GameState currentGameState;
+    
+    // Execution enabled flag
+    private boolean executionEnabled = false;
+    
+    // Security scan interval tracking
+    private long lastSecurityScan = 0;
+    private static final long SECURITY_SCAN_INTERVAL = 30000; // 30 seconds
+    
+    /**
+     * Get the singleton instance
+     * 
+     * @return The AIStateManager instance
+     */
+    public static synchronized AIStateManager getInstance() {
+        if (instance == null) {
+            instance = new AIStateManager();
+        }
+        return instance;
+    }
+    
+    /**
+     * Get the singleton instance with context
+     * 
+     * @param context The Android context
+     * @return The AIStateManager instance
+     */
+    public static synchronized AIStateManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new AIStateManager();
+        }
+        instance.setContext(context);
+        return instance;
+    }
+    
+    /**
+     * Set the context
+     * 
+     * @param context The Android context
+     */
+    public void setContext(Context context) {
+        this.context = context;
+        
+        try {
+            // Initialize anti-detection system with context
+            AntiDetectionInitializer antiDetectionInitializer = AntiDetectionInitializer.getInstance();
+            antiDetectionInitializer.setContext(context);
+            
+            // Initialize with high security level (level 3)
+            antiDetectionInitializer.initialize(context, 3);
+            
+            // Integrate with this AI manager
+            antiDetectionInitializer.integrateWithAI(this);
+            
+            // Extra security check via native code
+            if (ENABLE_NATIVE) {
+                try {
+                    boolean isSystemSafe = checkSystemSecurityNative();
+                    if (!isSystemSafe) {
+                        Log.w(TAG, "Native security check detected unsafe environment");
+                        // Activate enhanced security immediately
+                        SecurityContext.getInstance().setSecurityLevel(3);
+                        SecurityContext.getInstance().setMaxSecurityEnabled(true);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in native security check: " + e.getMessage());
+                }
+            }
+            
+            // Schedule initial security scan
+            performSecurityScan();
+            lastSecurityScan = System.currentTimeMillis();
+            
+            Log.d(TAG, "Anti-detection system initialized and integrated");
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing anti-detection system: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Constructor
+     */
+    private AIStateManager() {
+        Log.d(TAG, "AIStateManager initialized");
+        // Initialize meta-learning algorithm
+        metaLearningAlgorithm = new MetaLearningAlgorithm();
+        
+        // Initialize anti-detection system
+        // Note: Full initialization requires context, which will be provided later
+        SecurityContext.getInstance(); // Initialize security context
+    }
+    
+    /**
+     * Start the AI for a game
+     * 
+     * @param gamePackage The game package name
+     */
+    public void start(String gamePackage) {
+        if (currentState != AIState.INACTIVE) {
+            return; // Already running
+        }
+        
+        currentGamePackage = gamePackage;
+        updateState(AIState.INITIALIZING);
+        
+        // Run more intensive native security checks when loading model
+        if (ENABLE_NATIVE) {
+            try {
+                int securityLevel = getSecurityLevelForGame(gamePackage);
+                Log.d(TAG, "Native security level for game " + gamePackage + ": " + securityLevel);
+                
+                if (securityLevel > 2) {
+                    // If game needs high security, apply strongest protections
+                    updateSecurityForGame(gamePackage, true);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in native security check for game: " + e.getMessage());
+            }
+        }
+        
+        // Check if we have algorithms for this game
+        if (!algorithmMap.containsKey(gamePackage)) {
+            algorithmMap.put(gamePackage, new ArrayList<>());
+            // Here we would initialize algorithms for this game
+            Log.d(TAG, "Creating new algorithm set for game: " + gamePackage);
+        }
+        
+        // Load meta-learning model if available
+        if (context != null) {
+            File modelDir = new File(context.getFilesDir(), "models");
+            // Also reset native anti-detection systems
+            if (ENABLE_NATIVE) {
+                try {
+                    resetNativeSecuritySystems();
+                    Log.d(TAG, "Native security systems reset");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error resetting native security systems: " + e.getMessage());
+                }
+            }
+            if (!modelDir.exists()) {
+                modelDir.mkdirs();
+            }
+            metaLearningAlgorithm.load(new File(modelDir, "meta_learning_model.dat").getAbsolutePath());
+        }
+        
+        // Select the best algorithm based on meta-learning
+        selectAlgorithm();
+        
+        updateState(AIState.ACTIVE);
+        Log.d(TAG, "AI started for game: " + gamePackage);
+    }
+    
+    /**
+     * Stop the AI
+     */
+    public void stop() {
+        if (currentState == AIState.INACTIVE) {
+            return; // Already stopped
+        }
+        
+        // Save meta-learning model
+        if (context != null) {
+            updateState(AIState.SAVING);
+            File modelDir = new File(context.getFilesDir(), "models");
+            if (!modelDir.exists()) {
+                modelDir.mkdirs();
+            }
+            metaLearningAlgorithm.save(new File(modelDir, "meta_learning_model.dat").getAbsolutePath());
+            
+            // Shutdown anti-detection system
+            try {
+                AntiDetectionInitializer antiDetectionInitializer = AntiDetectionInitializer.getInstance();
+                antiDetectionInitializer.shutdown();
+                Log.d(TAG, "Anti-detection system shutdown requested");
+            } catch (Exception e) {
+                Log.e(TAG, "Error shutting down anti-detection system: " + e.getMessage());
+            }
+        }
+        
+        updateState(AIState.INACTIVE);
+        Log.d(TAG, "AI and anti-detection system stopped");
+    }
+    
+    /**
+     * Set the AI mode
+     * 
+     * @param mode The mode (MODE_AUTO, MODE_LEARNING, MODE_COPILOT, MODE_PASSIVE)
+     */
+    public void setMode(int mode) {
+        if (mode < MODE_AUTO || mode > MODE_PASSIVE) {
+            Log.e(TAG, "Invalid mode: " + mode);
+            return;
+        }
+        
+        currentMode = mode;
+        
+        // Update state based on mode
+        switch (mode) {
+            case MODE_AUTO:
+                updateState(AIState.ACTIVE);
+                break;
+            case MODE_LEARNING:
+                updateState(AIState.LEARNING);
+                break;
+            case MODE_COPILOT:
+                updateState(AIState.COPILOT);
+                break;
+            case MODE_PASSIVE:
+                updateState(AIState.OBSERVING);
+                break;
+        }
+        
+        Log.d(TAG, "AI mode set to: " + getModeString(mode));
+    }
+    
+    /**
+     * Get the current mode as a string
+     * 
+     * @param mode The mode
+     * @return The mode string
+     */
+    public String getModeString(int mode) {
+        switch (mode) {
+            case MODE_AUTO: return "Auto";
+            case MODE_LEARNING: return "Learning";
+            case MODE_COPILOT: return "Co-pilot";
+            case MODE_PASSIVE: return "Passive";
+            default: return "Unknown";
+        }
+    }
+    
+    /**
+     * Update the AI state
+     * 
+     * @param newState The new state
+     */
+    private void updateState(AIState newState) {
+        AIState oldState = currentState;
+        currentState = newState;
+        
+        // Notify listeners
+        for (AIStateListener listener : listeners) {
+            listener.onAIStateChanged(oldState, newState);
+        }
+        
+        // Update security level based on AI state
+        updateSecurityForAIState(newState);
+        
+        Log.d(TAG, "AI state changed from " + oldState + " to " + newState);
+    }
+    
+    /**
+     * Update security level based on AI state
+     * 
+     * @param state The current AI state
+     */
+    private void updateSecurityForAIState(AIState state) {
+        if (context == null) {
+            return;
+        }
+        
+        try {
+            // Get the security context
+            SecurityContext securityContext = SecurityContext.getInstance();
+            
+            // Set security level based on AI state
+            switch (state) {
+                case ACTIVE:
+                case EXECUTING_ACTION:
+                    // Maximum security during active control
+                    securityContext.setSecurityLevel(3);
+                    // Also enable advanced features
+                    securityContext.setObfuscateWindowContent(true);
+                    securityContext.setMaxSecurityEnabled(true);
+                    securityContext.setProcessIsolationEnabled(true);
+                    break;
+                    
+                case ANALYZING:
+                case LEARNING:
+                case COPILOT:
+                    // Enhanced security during interactive states
+                    securityContext.setSecurityLevel(2);
+                    securityContext.setObfuscateWindowContent(true);
+                    securityContext.setMaxSecurityEnabled(false);
+                    securityContext.setProcessIsolationEnabled(false);
+                    break;
+                    
+                case OBSERVING:
+                    // Basic security during passive observation
+                    securityContext.setSecurityLevel(1);
+                    securityContext.setObfuscateWindowContent(false);
+                    securityContext.setMaxSecurityEnabled(false);
+                    securityContext.setProcessIsolationEnabled(false);
+                    break;
+                    
+                case INACTIVE:
+                    // Minimal security when AI is not active
+                    securityContext.setSecurityLevel(1);
+                    securityContext.setObfuscateWindowContent(false);
+                    securityContext.setMaxSecurityEnabled(false);
+                    securityContext.setProcessIsolationEnabled(false);
+                    break;
+                    
+                default:
+                    // Standard security level
+                    securityContext.setSecurityLevel(2);
+                    securityContext.setObfuscateWindowContent(false);
+                    securityContext.setMaxSecurityEnabled(false);
+                    securityContext.setProcessIsolationEnabled(false);
+                    break;
+            }
+            
+            // Also update the native security level through the AntiDetectionInitializer if available
+            if (ENABLE_NATIVE && currentGamePackage != null) {
+                boolean highSecurity = (state == AIState.ACTIVE || state == AIState.EXECUTING_ACTION);
+                updateSecurityForGame(currentGamePackage, highSecurity);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating security level: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Add an AI state listener
+     * 
+     * @param listener The listener to add
+     */
+    public void addStateListener(AIStateListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+    
+    /**
+     * Remove an AI state listener
+     * 
+     * @param listener The listener to remove
+     */
+    public void removeStateListener(AIStateListener listener) {
+        listeners.remove(listener);
+    }
+    
+    /**
+     * Get the current state
+     * 
+     * @return The current state
+     */
+    public AIState getCurrentState() {
+        return currentState;
+    }
+    
+    /**
+     * Get the current mode
+     * 
+     * @return The current mode
+     */
+    public int getCurrentMode() {
+        return currentMode;
+    }
+    
+    /**
+     * Get the current game package
+     * 
+     * @return The current game package
+     */
+    public String getCurrentGamePackage() {
+        return currentGamePackage;
+    }
+    
+    /**
+     * Update the game state
+     * 
+     * @param gameState The new game state
+     */
+    public void updateGameState(GameState gameState) {
+        currentGameState = gameState;
+        
+        // Process the game state based on the current mode
+        if (currentState == AIState.INACTIVE) {
+            return;
+        }
+        
+        // Perform periodic security scan
+        long now = System.currentTimeMillis();
+        if (now - lastSecurityScan > SECURITY_SCAN_INTERVAL) {
+            performSecurityScan();
+            lastSecurityScan = now;
+        }
+        
+        // Update the current algorithm with the new state
+        if (currentAlgorithm != null) {
+            updateState(AIState.ANALYZING);
+            
+            // In AUTO mode, select and execute an action
+            if (currentMode == MODE_AUTO && executionEnabled) {
+                AIAction action = selectAction();
+                if (action != null) {
+                    executeAction(action);
+                }
+            }
+            
+            // In COPILOT mode, suggest an action
+            if (currentMode == MODE_COPILOT) {
+                AIAction suggestedAction = selectAction();
+                if (suggestedAction != null) {
+                    suggestAction(suggestedAction);
+                }
+            }
+            
+            // Revert to the previous state
+            switch (currentMode) {
+                case MODE_AUTO:
+                    updateState(AIState.ACTIVE);
+                    break;
+                case MODE_LEARNING:
+                    updateState(AIState.LEARNING);
+                    break;
+                case MODE_COPILOT:
+                    updateState(AIState.COPILOT);
+                    break;
+                case MODE_PASSIVE:
+                    updateState(AIState.OBSERVING);
+                    break;
+            }
+        }
+    }
+    
+    /**
+     * Select an action using the current algorithm
+     * 
+     * @return The selected action
+     */
+    private AIAction selectAction() {
+        if (currentAlgorithm == null || currentGameState == null) {
+            return null;
+        }
+        
+        AIAction action = currentAlgorithm.selectAction(currentGameState);
+        if (action != null) {
+            Log.d(TAG, "Selected action: " + action.getType());
+        }
+        return action;
+    }
+    
+    /**
+     * Execute an action
+     * 
+     * @param action The action to execute
+     */
+    private void executeAction(AIAction action) {
+        if (action == null) {
+            return;
+        }
+        
+        updateState(AIState.EXECUTING_ACTION);
+        
+        // Add to action history
+        actionHistory.add(action);
+        if (actionHistory.size() > 100) {
+            actionHistory.remove(0);
+        }
+        
+        // Notify action listeners
+        for (AIStateListener listener : listeners) {
+            if (listener instanceof AIActionListener) {
+                ((AIActionListener) listener).onActionSuggested(action);
+            }
+        }
+        
+        // Here you would actually execute the action
+        Log.d(TAG, "Executing action: " + action.getType());
+    }
+    
+    /**
+     * Suggest an action
+     * 
+     * @param action The action to suggest
+     */
+    private void suggestAction(AIAction action) {
+        if (action == null) {
+            return;
+        }
+        
+        // Notify action listeners
+        for (AIStateListener listener : listeners) {
+            if (listener instanceof AIActionListener) {
+                ((AIActionListener) listener).onActionSuggested(action);
+            }
+        }
+        
+        Log.d(TAG, "Suggesting action: " + action.getType());
+    }
+    
+    /**
+     * Select the best algorithm for the current game
+     */
+    private void selectAlgorithm() {
+        if (currentGamePackage == null) {
+            return;
+        }
+        
+        List<RLAlgorithm> algorithms = algorithmMap.get(currentGamePackage);
+        if (algorithms == null || algorithms.isEmpty()) {
+            Log.e(TAG, "No algorithms available for game: " + currentGamePackage);
+            return;
+        }
+        
+        currentAlgorithm = metaLearningAlgorithm.selectBestAlgorithm(algorithms);
+        if (currentAlgorithm == null) {
+            // Just use the first one if meta-learning hasn't learned yet
+            currentAlgorithm = algorithms.get(0);
+        }
+        
+        Log.d(TAG, "Selected algorithm: " + currentAlgorithm.getClass().getSimpleName());
+    }
+    
+    /**
+     * Set the execution enabled flag
+     * 
+     * @param enabled Whether execution is enabled
+     */
+    public void setExecutionEnabled(boolean enabled) {
+        this.executionEnabled = enabled;
+        Log.d(TAG, "Action execution " + (enabled ? "enabled" : "disabled"));
+    }
+    
+    /**
+     * Get the execution enabled flag
+     * 
+     * @return Whether execution is enabled
+     */
+    public boolean isExecutionEnabled() {
+        return executionEnabled;
+    }
+    
+    /**
+     * Get the action history
+     * 
+     * @return The action history
+     */
+    public List<AIAction> getActionHistory() {
+        return new ArrayList<>(actionHistory);
+    }
+    
+    /**
+     * Clear the action history
+     */
+    public void clearActionHistory() {
+        actionHistory.clear();
+        Log.d(TAG, "Action history cleared");
+    }
+    
+    /**
+     * Get the current meta-learning performance scores
+     * 
+     * @return The performance scores
+     */
+    public float[] getAlgorithmPerformanceScores() {
+        return metaLearningAlgorithm.getPerformanceScores();
+    }
+    
+    /**
+     * Reset the meta-learning model
+     */
+    public void resetMetaLearning() {
+        metaLearningAlgorithm.reset();
+        Log.d(TAG, "Meta-learning model reset");
+    }
+    
+    /**
+     * AI state change listener interface
+     */
+    public interface AIStateListener {
+        void onAIStateChanged(AIState oldState, AIState newState);
+    }
+    
+    /**
+     * AI action listener interface
+     */
+    public interface AIActionListener extends AIStateListener {
+        void onActionSuggested(AIAction action);
+    }
+    
+    // Native methods
+    private native boolean checkSystemSecurityNative();
+    private native int getSecurityLevelForGame(String gamePackage);
+    private native boolean updateSecurityForGame(String gamePackage, boolean highSecurity);
+    private native void resetNativeSecuritySystems();
+    private native boolean isBeingAnalyzedNative();
+    private native boolean isAppInForegroundNative(String packageName);
+    
+    /**
+     * Check if the application is being analyzed by monitoring tools
+     * 
+     * @return true if being analyzed, false otherwise
+     */
+    public boolean isBeingAnalyzed() {
+        if (ENABLE_NATIVE) {
+            try {
+                // Call native method
+                return isBeingAnalyzedNative();
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking analysis state: " + e.getMessage());
+            }
+        }
+        
+        // Default to false if native method fails
+        return false;
+    }
+    
+    /**
+     * Check if a specific app is in foreground
+     * 
+     * @param packageName The package name to check
+     * @return true if the app is in foreground, false otherwise
+     */
+    public boolean isAppInForeground(String packageName) {
+        if (ENABLE_NATIVE && packageName != null) {
+            try {
+                // Call native method
+                return isAppInForegroundNative(packageName);
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking app foreground state: " + e.getMessage());
+            }
+        }
+        
+        // Default to false if native method fails
+        return false;
+    }
+    
+    /**
+     * Perform comprehensive security scan and respond to potential threats
+     * This method is periodically called by the AntiDetectionManager
+     */
+    public void performSecurityScan() {
+        // Check if we're being analyzed using multiple detection techniques
+        boolean analyzed = isBeingAnalyzed();
+        boolean suspiciousEnvironment = false;
+        
+        // Check if current game is in foreground (if not, something might be wrong)
+        if (currentGamePackage != null) {
+            boolean gameInForeground = isAppInForeground(currentGamePackage);
+            if (!gameInForeground && currentState != AIState.INACTIVE) {
+                // Game not in foreground but AI active - suspicious
+                suspiciousEnvironment = true;
+                Log.w(TAG, "Game not in foreground but AI active - potentially suspicious");
+            }
+        }
+        
+        // Update security context
+        SecurityContext securityContext = SecurityContext.getInstance();
+        securityContext.setBeingMonitored(analyzed || suspiciousEnvironment);
+        
+        // Add randomization to security responses to prevent pattern detection
+        boolean randomEnhance = (Math.random() < 0.3); // 30% chance of enhanced security
+        
+        // Take protective actions if threats detected
+        if (analyzed || suspiciousEnvironment || randomEnhance) {
+            // Determine severity level
+            int threatLevel = 1;
+            if (analyzed) threatLevel = 3; // Highest threat
+            else if (suspiciousEnvironment) threatLevel = 2;
+            else if (randomEnhance) threatLevel = 1;
+            
+            Log.w(TAG, "Security threat detected (level " + threatLevel + "), applying protective measures");
+            
+            // Apply appropriate countermeasures based on threat level
+            if (threatLevel >= 3) {
+                // Maximum security - full protection
+                securityContext.setSecurityLevel(3);
+                securityContext.setMaxSecurityEnabled(true);
+                securityContext.setObfuscateWindowContent(true);
+                securityContext.setProcessIsolationEnabled(true);
+                
+                // Immediately change AI state to reduce visibility of operations
+                if (currentState == AIState.EXECUTING_ACTION) {
+                    // Temporarily pause action execution
+                    Log.d(TAG, "Pausing AI execution due to security concerns");
+                    updateState(AIState.OBSERVING); // Switch to passive mode temporarily
+                }
+            } else if (threatLevel == 2) {
+                // High security - enhanced protection
+                securityContext.setSecurityLevel(2);
+                securityContext.setMaxSecurityEnabled(true);
+                securityContext.setObfuscateWindowContent(true);
+                securityContext.setProcessIsolationEnabled(false);
+            } else {
+                // Moderate security - basic protection with randomized responses
+                securityContext.setSecurityLevel(Math.min(securityContext.getSecurityLevel() + 1, 2));
+                boolean randomObfuscate = (Math.random() < 0.5);
+                securityContext.setObfuscateWindowContent(randomObfuscate);
+                securityContext.setMaxSecurityEnabled(false);
+            }
+        }
+    }
+}

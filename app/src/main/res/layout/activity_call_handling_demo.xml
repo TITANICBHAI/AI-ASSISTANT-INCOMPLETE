@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AI Call Assistant"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Call Handling Status"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <Switch
+                    android:id="@+id/switch_call_handling"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enable Call Handling"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your Status:"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <RadioGroup
+                    android:id="@+id/radio_group_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/radio_unavailable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unavailable"
+                        android:checked="true"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_busy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Busy (in a meeting)"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_driving"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Driving"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_sleeping"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sleeping"/>
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Response Mode"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <RadioGroup
+                    android:id="@+id/radio_group_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/radio_mode_basic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Basic (Simple pre-defined responses)"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_mode_smart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Smart (Natural conversation with fillers)"
+                        android:checked="true"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_mode_custom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Custom (User-defined rules)"/>
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Test Call Response"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Phone Number:"
+                    android:layout_marginBottom="4dp"/>
+
+                <EditText
+                    android:id="@+id/edit_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+                    android:layout_marginBottom="8dp"/>
+
+                <Button
+                    android:id="@+id/button_test_response"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Test Response"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recent Calls Handled"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/text_recent_calls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No recent calls"
+                    android:layout_marginBottom="8dp"/>
+
+                <Button
+                    android:id="@+id/button_clear_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear History"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

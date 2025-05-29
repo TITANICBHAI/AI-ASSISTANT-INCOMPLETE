@@ -1,0 +1,353 @@
+package com.aiassistant.core.ai.models;
+
+import android.util.Log;
+
+import com.aiassistant.data.models.GameState;
+import com.aiassistant.data.models.ScreenActionEntity;
+
+/**
+ * Represents a reward for an action taken in a game
+ */
+public class ActionReward {
+    
+    private static final String TAG = "ActionReward";
+    
+    // Reward sources
+    public static final int SOURCE_COMBAT = 0;
+    public static final int SOURCE_OBJECTIVE = 1;
+    public static final int SOURCE_SURVIVAL = 2;
+    public static final int SOURCE_EXPLORATION = 3;
+    public static final int SOURCE_UI_INTERACTION = 4;
+    
+    // Reward values
+    private float totalReward;
+    private float combatReward;
+    private float objectiveReward;
+    private float survivalReward;
+    private float explorationReward;
+    private float uiInteractionReward;
+    
+    // Related states and action
+    private GameState previousState;
+    private GameState currentState;
+    private ScreenActionWrapper action;
+    
+    /**
+     * Default constructor
+     */
+    public ActionReward() {
+        this.totalReward = 0.0f;
+        this.combatReward = 0.0f;
+        this.objectiveReward = 0.0f;
+        this.survivalReward = 0.0f;
+        this.explorationReward = 0.0f;
+        this.uiInteractionReward = 0.0f;
+    }
+    
+    /**
+     * Constructor with states and action
+     * 
+     * @param previousState The previous game state
+     * @param currentState The current game state
+     * @param action The action taken
+     */
+    public ActionReward(GameState previousState, GameState currentState, ScreenActionWrapper action) {
+        this();
+        this.previousState = previousState;
+        this.currentState = currentState;
+        this.action = action;
+        
+        // Calculate reward automatically
+        calculateReward();
+    }
+    
+    /**
+     * Calculate the reward for the action
+     */
+    public void calculateReward() {
+        if (previousState == null || currentState == null || action == null) {
+            Log.w(TAG, "Cannot calculate reward with null states or action");
+            return;
+        }
+        
+        try {
+            // Calculate individual reward components
+            calculateCombatReward();
+            calculateObjectiveReward();
+            calculateSurvivalReward();
+            calculateExplorationReward();
+            calculateUIInteractionReward();
+            
+            // Sum up total reward
+            totalReward = combatReward + objectiveReward + survivalReward + explorationReward + uiInteractionReward;
+            
+            Log.d(TAG, "Calculated reward: " + totalReward + 
+                   " (combat=" + combatReward + 
+                   ", objective=" + objectiveReward + 
+                   ", survival=" + survivalReward + 
+                   ", exploration=" + explorationReward + 
+                   ", ui=" + uiInteractionReward + ")");
+                   
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Calculate combat-related reward
+     */
+    private void calculateCombatReward() {
+        // Default implementation
+        combatReward = 0.0f;
+        
+        try {
+            // Reward for dealing damage
+            if (currentState.isInCombat()) {
+                // Simple heuristic: more enemies = more reward
+                int prevEnemyCount = previousState.getEnemies() != null ? previousState.getEnemies().size() : 0;
+                int currEnemyCount = currentState.getEnemies() != null ? currentState.getEnemies().size() : 0;
+                
+                // Reward for eliminating enemies
+                if (prevEnemyCount > currEnemyCount) {
+                    combatReward += 1.0f * (prevEnemyCount - currEnemyCount);
+                }
+                
+                // Small reward for staying in combat
+                combatReward += 0.1f;
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating combat reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Calculate objective-related reward
+     */
+    private void calculateObjectiveReward() {
+        // Default implementation
+        objectiveReward = 0.0f;
+        
+        try {
+            // Reward for moving closer to objective
+            // This would require game-specific objective information
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating objective reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Calculate survival-related reward
+     */
+    private void calculateSurvivalReward() {
+        // Default implementation
+        survivalReward = 0.0f;
+        
+        try {
+            // Penalize health loss
+            float prevHealth = previousState.getPlayerHealth();
+            float currHealth = currentState.getPlayerHealth();
+            
+            if (currHealth < prevHealth) {
+                survivalReward -= (prevHealth - currHealth) / 10.0f;
+            }
+            
+            // Reward for healing
+            if (currHealth > prevHealth) {
+                survivalReward += (currHealth - prevHealth) / 20.0f;
+            }
+            
+            // Base survival reward
+            survivalReward += 0.05f;
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating survival reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Calculate exploration-related reward
+     */
+    private void calculateExplorationReward() {
+        // Default implementation
+        explorationReward = 0.0f;
+        
+        try {
+            // Small reward for moving
+            if (action.getActionType() == ScreenActionEntity.ACTION_SWIPE) {
+                explorationReward += 0.05f;
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating exploration reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Calculate UI interaction-related reward
+     */
+    private void calculateUIInteractionReward() {
+        // Default implementation
+        uiInteractionReward = 0.0f;
+        
+        try {
+            // Reward for successful UI interactions
+            if (action.getActionType() == ScreenActionEntity.ACTION_TAP && action.getAction().getTargetElementId() > 0) {
+                uiInteractionReward += 0.2f;
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating UI interaction reward: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Add reward from a specific source
+     * 
+     * @param source The reward source
+     * @param value The reward value
+     */
+    public void addReward(int source, float value) {
+        switch (source) {
+            case SOURCE_COMBAT:
+                combatReward += value;
+                break;
+                
+            case SOURCE_OBJECTIVE:
+                objectiveReward += value;
+                break;
+                
+            case SOURCE_SURVIVAL:
+                survivalReward += value;
+                break;
+                
+            case SOURCE_EXPLORATION:
+                explorationReward += value;
+                break;
+                
+            case SOURCE_UI_INTERACTION:
+                uiInteractionReward += value;
+                break;
+        }
+        
+        // Update total reward
+        totalReward = combatReward + objectiveReward + survivalReward + explorationReward + uiInteractionReward;
+    }
+    
+    // Getters and setters
+    
+    public float getTotalReward() {
+        return totalReward;
+    }
+    
+    public void setTotalReward(float totalReward) {
+        this.totalReward = totalReward;
+    }
+    
+    public float getCombatReward() {
+        return combatReward;
+    }
+    
+    public void setCombatReward(float combatReward) {
+        this.combatReward = combatReward;
+    }
+    
+    public float getObjectiveReward() {
+        return objectiveReward;
+    }
+    
+    public void setObjectiveReward(float objectiveReward) {
+        this.objectiveReward = objectiveReward;
+    }
+    
+    public float getSurvivalReward() {
+        return survivalReward;
+    }
+    
+    public void setSurvivalReward(float survivalReward) {
+        this.survivalReward = survivalReward;
+    }
+    
+    public float getExplorationReward() {
+        return explorationReward;
+    }
+    
+    public void setExplorationReward(float explorationReward) {
+        this.explorationReward = explorationReward;
+    }
+    
+    public float getUiInteractionReward() {
+        return uiInteractionReward;
+    }
+    
+    public void setUiInteractionReward(float uiInteractionReward) {
+        this.uiInteractionReward = uiInteractionReward;
+    }
+    
+    public GameState getPreviousState() {
+        return previousState;
+    }
+    
+    public void setPreviousState(GameState previousState) {
+        this.previousState = previousState;
+    }
+    
+    public GameState getCurrentState() {
+        return currentState;
+    }
+    
+    public void setCurrentState(GameState currentState) {
+        this.currentState = currentState;
+    }
+    
+    public ScreenActionWrapper getAction() {
+        return action;
+    }
+    
+    public void setAction(ScreenActionWrapper action) {
+        this.action = action;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ActionReward: ");
+        sb.append(String.format("%.2f", totalReward));
+        
+        if (action != null) {
+            sb.append(" for ").append(getActionTypeString(action.getActionType()));
+        }
+        
+        sb.append(" [combat=").append(String.format("%.2f", combatReward))
+          .append(", objective=").append(String.format("%.2f", objectiveReward))
+          .append(", survival=").append(String.format("%.2f", survivalReward))
+          .append(", exploration=").append(String.format("%.2f", explorationReward))
+          .append(", ui=").append(String.format("%.2f", uiInteractionReward))
+          .append("]");
+          
+        return sb.toString();
+    }
+    
+    /**
+     * Get a string representation of an action type
+     * 
+     * @param actionType The action type
+     * @return The action type string
+     */
+    private String getActionTypeString(int actionType) {
+        switch (actionType) {
+            case ScreenActionEntity.ACTION_TAP:
+                return "TAP";
+            case ScreenActionEntity.ACTION_SWIPE:
+                return "SWIPE";
+            case ScreenActionEntity.ACTION_LONG_PRESS:
+                return "LONG_PRESS";
+            case ScreenActionEntity.ACTION_TEXT_INPUT:
+                return "TEXT_INPUT";
+            case ScreenActionEntity.ACTION_BACK:
+                return "BACK";
+            default:
+                return "UNKNOWN";
+        }
+    }
+}

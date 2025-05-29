@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PDF Learning -->
+    <string name="pdf_learning_title">PDF Learning</string>
+    <string name="pdf_learning_intro">Upload and analyze PDF documents to extract knowledge and answer questions.</string>
+    <string name="select_pdf_button">Select PDF</string>
+    <string name="analyze_pdf_button">Analyze PDF</string>
+    <string name="pdf_documents_title">PDF Documents</string>
+    
+    <!-- Voice Commands -->
+    <string name="voice_command_ready">Ready for voice command</string>
+    
+    <!-- Task Management -->
+    <string name="task_name">Task Name</string>
+    <string name="task_details">Task Details</string>
+    <string name="task_title">Task Title</string>
+    
+    <!-- App Detection -->
+    <string name="detected_app_format">Detected app: %1$s</string>
+    <string name="use_detected_app">Use this app</string>
+    
+    <!-- Research -->
+    <string name="research_results">Research Results</string>
+    <string name="research_sources">Sources</string>
+    
+    <!-- Common Actions -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="action_share">Share</string>
+    
+    <!-- Video/Learning -->
+    <string name="video_name_hint">Enter a name for this learning session</string>
+</resources>

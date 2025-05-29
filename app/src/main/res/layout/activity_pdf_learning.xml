@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ui.PDFLearningActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pdf_learning_title"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pdf_learning_intro"
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:id="@+id/pdf_preview_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_outline_background"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/pdf_preview_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="PDF preview will appear here"
+            android:textColor="@color/colorTextSecondary" />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/select_pdf_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_pdf_button"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/analyze_pdf_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/analyze_pdf_button"
+        android:enabled="false" />
+
+    <ProgressBar
+        android:id="@+id/pdf_analysis_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal" />
+
+    <TextView
+        android:id="@+id/pdf_analysis_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+</LinearLayout>

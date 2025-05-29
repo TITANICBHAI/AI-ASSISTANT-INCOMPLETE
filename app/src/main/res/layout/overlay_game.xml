@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/overlay_control_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorOverlayBackground"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <ImageButton
+                android:id="@+id/button_overlay_close"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="@color/colorOverlayText" />
+
+            <ImageButton
+                android:id="@+id/button_overlay_minimize"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Minimize"
+                android:src="@android:drawable/ic_menu_slideshow"
+                android:tint="@color/colorOverlayText" />
+
+            <ImageButton
+                android:id="@+id/button_overlay_settings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Settings"
+                android:src="@android:drawable/ic_menu_manage"
+                android:tint="@color/colorOverlayText" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/overlay_status_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorOverlayBackground"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/text_overlay_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI Mode: Auto"
+                android:textColor="@color/colorOverlayText"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/text_overlay_confidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confidence: 85%"
+                android:textColor="@color/colorOverlaySuccess"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/overlay_suggestion_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/colorOverlayBackground"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/text_overlay_suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suggested action: Aim at enemy"
+                android:textColor="@color/colorOverlayText"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_overlay_accept"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorOverlaySuccess"
+                    android:text="Accept"
+                    android:textColor="@color/colorOverlayText"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/button_overlay_reject"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorOverlayDanger"
+                    android:text="Reject"
+                    android:textColor="@color/colorOverlayText"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

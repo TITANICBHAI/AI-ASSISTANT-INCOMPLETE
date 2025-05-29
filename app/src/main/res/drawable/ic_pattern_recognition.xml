@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    
+    <!-- Main grid pattern -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M6,6 L42,6 L42,42 L6,42 z"/>
+    
+    <!-- Horizontal and vertical grid lines -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1"
+        android:pathData="M6,18 L42,18M6,30 L42,30M18,6 L18,42M30,6 L30,42"/>
+    
+    <!-- Diagonal pattern - top left to bottom right -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1"
+        android:pathData="M6,6 L42,42"/>
+    
+    <!-- Diagonal pattern - top right to bottom left -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1"
+        android:pathData="M42,6 L6,42"/>
+</vector>

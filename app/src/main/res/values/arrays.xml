@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Voice Language Arrays -->
+    <string-array name="voice_language_entries">
+        <item>English</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Chinese</item>
+        <item>Japanese</item>
+        <item>Russian</item>
+    </string-array>
+    
+    <string-array name="voice_language_values">
+        <item>en</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>zh</item>
+        <item>ja</item>
+        <item>ru</item>
+    </string-array>
+    
+    <!-- Performance Mode Arrays -->
+    <string-array name="performance_mode_entries">
+        <item>Balanced</item>
+        <item>Power Saving</item>
+        <item>High Performance</item>
+        <item>Ultra</item>
+    </string-array>
+    
+    <string-array name="performance_mode_values">
+        <item>balanced</item>
+        <item>power_saving</item>
+        <item>high_performance</item>
+        <item>ultra</item>
+    </string-array>
+</resources>

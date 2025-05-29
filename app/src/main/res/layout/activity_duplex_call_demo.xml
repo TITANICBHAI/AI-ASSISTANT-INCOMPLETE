@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ui.voice.DuplexCallDemoActivity">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Google Duplex-like Business Calls"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make automated calls to businesses with human-like voice, including conversational fillers like 'um' and 'uh'."
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/scriptTypeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Script Type:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/scriptTypeSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/scriptTypeLabel"
+        app:layout_constraintBottom_toBottomOf="@id/scriptTypeLabel"
+        app:layout_constraintStart_toEndOf="@id/scriptTypeLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/phoneNumberLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone Number:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/scriptTypeSpinner"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/phoneNumberEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:inputType="phone"
+        android:hint="Enter phone number"
+        app:layout_constraintTop_toTopOf="@id/phoneNumberLabel"
+        app:layout_constraintBottom_toBottomOf="@id/phoneNumberLabel"
+        app:layout_constraintStart_toEndOf="@id/phoneNumberLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/businessNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Business Name:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/phoneNumberEditText"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/businessNameEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="Enter business name"
+        app:layout_constraintTop_toTopOf="@id/businessNameLabel"
+        app:layout_constraintBottom_toBottomOf="@id/businessNameLabel"
+        app:layout_constraintStart_toEndOf="@id/businessNameLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/userNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Name:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/businessNameEditText"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/userNameEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="Enter your name"
+        app:layout_constraintTop_toTopOf="@id/userNameLabel"
+        app:layout_constraintBottom_toBottomOf="@id/userNameLabel"
+        app:layout_constraintStart_toEndOf="@id/userNameLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/serviceDetailsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service Details:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/userNameEditText"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/serviceDetailsEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="Enter service details"
+        app:layout_constraintTop_toTopOf="@id/serviceDetailsLabel"
+        app:layout_constraintBottom_toBottomOf="@id/serviceDetailsLabel"
+        app:layout_constraintStart_toEndOf="@id/serviceDetailsLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/serviceDetailsEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/makeCallButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Make Duplex Call"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/endCallButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="End Call"
+            android:enabled="false"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/callStatusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call Status:"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/callStatusTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="No call in progress"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/callStatusLabel"
+        app:layout_constraintStart_toEndOf="@id/callStatusLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/exampleLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Examples:"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/callStatusTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/exampleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Restaurant: 'Italian Restaurant', '4 people, tonight at 7:30 PM'\n\nSalon: 'Hair Studio', 'haircut, Friday at 2 PM'"
+        app:layout_constraintTop_toBottomOf="@id/exampleLabel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

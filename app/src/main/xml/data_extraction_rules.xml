@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Storage related data should be excluded to protect user privacy -->
+        <exclude domain="file" path="ml_models/" />
+        <exclude domain="file" path="temp/" />
+        <exclude domain="database" path="sensitive_data.db" />
+        <exclude domain="sharedpref" path="sensitive_settings.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="." />
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="external" path="." />
+        <!-- Exclude ML models folder as they can be regenerated -->
+        <exclude domain="file" path="ml_models/temp" />
+    </device-transfer>
+</data-extraction-rules>

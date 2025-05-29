@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="ai_settings"
+        app:title="AI Settings">
+
+        <SwitchPreferenceCompat
+            app:key="use_gpu"
+            app:title="@string/setting_use_gpu"
+            app:defaultValue="true" />
+
+        <SeekBarPreference
+            app:key="detection_sensitivity"
+            app:title="@string/setting_detection_sensitivity"
+            android:max="100"
+            app:defaultValue="75" />
+
+        <SwitchPreferenceCompat
+            app:key="save_screenshots"
+            app:title="@string/setting_save_screenshots"
+            app:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            app:key="battery_saver"
+            app:title="@string/settings_battery_saver"
+            app:defaultValue="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

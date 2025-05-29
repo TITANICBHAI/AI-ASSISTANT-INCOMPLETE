@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AI Control -->
+    <string name="status_service_not_running">Service not running</string>
+    <string name="btn_activate">Activate</string>
+    <string name="btn_open_accessibility_settings">Open Accessibility Settings</string>
+    <string name="ai_mode_title">AI Mode</string>
+    <string name="ai_mode_disabled">AI Mode Disabled</string>
+    
+    <!-- AI Mode -->
+    <string name="auto_mode">Auto Mode</string>
+    <string name="auto_mode_description">AI will automatically analyze and assist</string>
+    <string name="copilot_mode">Co-pilot Mode</string>
+    <string name="copilot_mode_description">AI will provide assistance when asked</string>
+    <string name="apply_mode_button">Apply Mode</string>
+    
+    <!-- AI Mode Settings -->
+    <string name="auto_mode_settings">Auto Mode Settings</string>
+    <string name="auto_mode_settings_description">Configure automatic assistance parameters</string>
+    <string name="copilot_mode_settings">Co-pilot Mode Settings</string>
+    <string name="copilot_mode_settings_description">Configure on-demand assistance behavior</string>
+    
+    <!-- Inactivity Settings -->
+    <string name="inactivity_settings">Inactivity Settings</string>
+    <string name="inactivity_detection">Inactivity Detection</string>
+    <string name="inactivity_time">Inactivity Time</string>
+    <string name="inactivity_time_format">%d minutes</string>
+    <string name="start_monitoring">Start Monitoring</string>
+    <string name="stop_monitoring">Stop Monitoring</string>
+</resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <com.aiassistant.ai.features.tactical.TacticalOverlayView
+        android:id="@+id/tactical_overlay_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top|end"
+        android:background="@drawable/overlay_info_background"
+        android:padding="8dp"
+        android:layout_margin="16dp">
+
+        <TextView
+            style="@style/TacticalOverlayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tactical Overlay Active"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tactical_targets"
+            style="@style/TacticalOverlayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Targets: 0" />
+
+        <TextView
+            android:id="@+id/tactical_threats"
+            style="@style/TacticalOverlayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Threats: 0" />
+
+        <TextView
+            android:id="@+id/tactical_resources"
+            style="@style/TacticalOverlayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resources: 0" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/close_overlay_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="16dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="Close Overlay"
+        android:src="@drawable/ic_close" />
+</FrameLayout>

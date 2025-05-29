@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:pathData="M6,6L16,16"
+        android:strokeWidth="2"
+        android:strokeColor="@color/enemy_detected"/>
+    <path
+        android:pathData="M6,16L16,6"
+        android:strokeWidth="2"
+        android:strokeColor="@color/enemy_detected"/>
+    <path
+        android:pathData="M32,32L42,42"
+        android:strokeWidth="2"
+        android:strokeColor="@color/enemy_detected"/>
+    <path
+        android:pathData="M32,42L42,32"
+        android:strokeWidth="2"
+        android:strokeColor="@color/enemy_detected"/>
+    <path
+        android:pathData="M4,24L44,24"
+        android:strokeWidth="1.5"
+        android:strokeColor="@color/enemy_detected"/>
+</vector>

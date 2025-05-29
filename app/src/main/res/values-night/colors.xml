@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors - Night Mode -->
+    <color name="colorPrimary">#1E88E5</color>
+    <color name="colorPrimaryDark">#0D47A1</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorWarning">#FFB300</color>
+    <color name="colorError">#F44336</color>
+    <color name="colorInfo">#2196F3</color>
+    <color name="colorDisabled">#757575</color>
+    
+    <!-- Text colors - Night Mode -->
+    <color name="colorText">#E0E0E0</color>
+    <color name="colorTextSecondary">#BDBDBD</color>
+    <color name="colorTextLight">#FFFFFF</color>
+    <color name="textPrimary">#E0E0E0</color>
+    <color name="textSecondary">#BDBDBD</color>
+    
+    <!-- Background colors - Night Mode -->
+    <color name="colorBackground">#121212</color>
+    <color name="colorBackgroundDark">#212121</color>
+    <color name="colorDivider">#424242</color>
+    <color name="app_background">#121212</color>
+    
+    <!-- Transparent colors - Night Mode -->
+    <color name="transparentBlack">#B3000000</color>
+    <color name="transparentWhite">#80FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Game-specific colors - Night Mode -->
+    <color name="aim_assist_color">#FDD835</color>
+    <color name="enemy_detected">#E53935</color>
+    <color name="friend_detected">#43A047</color>
+    <color name="object_detected">#1E88E5</color>
+    <color name="resource_detected">#FB8C00</color>
+    
+    <!-- Overlay colors - Night Mode -->
+    <color name="colorOverlayBackground">#B3000000</color>
+    <color name="colorOverlayText">#FFFFFF</color>
+    <color name="colorOverlaySuccess">#66BB6A</color>
+    <color name="colorOverlayDanger">#EF5350</color>
+    <color name="colorOverlayWarning">#FFCA28</color>
+    <color name="colorOverlayPrimary">#42A5F5</color>
+    
+    <!-- UI-specific colors - Night Mode -->
+    <color name="primary">#1E88E5</color>
+    <color name="primary_dark">#0D47A1</color>
+    <color name="accent">#FF4081</color>
+    <color name="button_normal">#1E88E5</color>
+    <color name="button_pressed">#0D47A1</color>
+    <color name="button_disabled">#616161</color>
+</resources>

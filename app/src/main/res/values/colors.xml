@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors -->
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorWarning">#FFC107</color>
+    <color name="colorError">#F44336</color>
+    <color name="colorInfo">#2196F3</color>
+    <color name="colorDisabled">#9E9E9E</color>
+    
+    <!-- Text colors -->
+    <color name="colorText">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorTextLight">#FFFFFF</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+    
+    <!-- Background colors -->
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorBackgroundDark">#F5F5F5</color>
+    <color name="colorDivider">#BDBDBD</color>
+    <color name="app_background">#F5F7FA</color>
+    
+    <!-- Transparent colors -->
+    <color name="transparentBlack">#80000000</color>
+    <color name="transparentWhite">#B3FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Basic colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#F44336</color>
+    <color name="green">#4CAF50</color>
+    <color name="blue">#2196F3</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="orange">#FF9800</color>
+    <color name="purple">#9C27B0</color>
+    
+    <!-- Game-specific colors -->
+    <color name="aim_assist_color">#FFEB3B</color>
+    <color name="enemy_detected">#F44336</color>
+    <color name="friend_detected">#4CAF50</color>
+    <color name="object_detected">#2196F3</color>
+    <color name="resource_detected">#FF9800</color>
+    
+    <!-- Overlay colors -->
+    <color name="colorOverlayBackground">#80000000</color>
+    <color name="colorOverlayText">#FFFFFF</color>
+    <color name="colorOverlaySuccess">#4CAF50</color>
+    <color name="colorOverlayDanger">#F44336</color>
+    <color name="colorOverlayWarning">#FFC107</color>
+    <color name="colorOverlayPrimary">#2196F3</color>
+    
+    <!-- UI-specific colors -->
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="accent">#FF4081</color>
+    <color name="button_normal">#2196F3</color>
+    <color name="button_pressed">#1976D2</color>
+    <color name="button_disabled">#9E9E9E</color>
+</resources>

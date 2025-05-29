@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Using system fonts since actual font files aren't included in this demo -->
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/roboto_regular" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        android:font="@font/roboto_medium" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        android:font="@font/roboto_bold" />
+</font-family>

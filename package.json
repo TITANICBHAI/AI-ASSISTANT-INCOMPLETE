@@ -1,0 +1,19 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@react-native-community/cli": "^18.0.0",
+    "gradle": "^1.2.4",
+    "metro": "^0.82.1",
+    "react": "^19.1.0",
+    "react-native": "^0.78.2"
+  }
+}
