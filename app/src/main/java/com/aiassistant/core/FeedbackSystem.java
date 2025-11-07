@@ -6,6 +6,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * System responsible for collecting, processing, and responding to feedback
  * from both user actions and AI performance metrics
@@ -25,6 +30,10 @@ public class FeedbackSystem {
     private long totalInteractionTime = 0;
     private long startTimestamp = 0;
     
+    // Enhanced metrics for adaptive scheduling
+    private final Map<String, ComponentQualityMetrics> componentMetrics;
+    private final List<PerformanceRecord> performanceHistory;
+    
     // System state
     private boolean isRunning = false;
     
@@ -33,6 +42,8 @@ public class FeedbackSystem {
      */
     public FeedbackSystem() {
         mainHandler = new Handler(Looper.getMainLooper());
+        componentMetrics = new HashMap<>();
+        performanceHistory = new ArrayList<>();
     }
     
     /**
@@ -158,5 +169,120 @@ public class FeedbackSystem {
      */
     public int getFailedInteractions() {
         return failedInteractions;
+    }
+    
+    public void recordComponentExecution(String componentId, long latencyMs, 
+                                        float confidenceScore, boolean success) {
+        ComponentQualityMetrics metrics = componentMetrics.computeIfAbsent(
+            componentId,
+            k -> new ComponentQualityMetrics(componentId)
+        );
+        
+        metrics.recordExecution(latencyMs, confidenceScore, success);
+        
+        PerformanceRecord record = new PerformanceRecord(
+            componentId,
+            latencyMs,
+            confidenceScore,
+            success,
+            System.currentTimeMillis()
+        );
+        performanceHistory.add(record);
+        
+        if (performanceHistory.size() > 1000) {
+            performanceHistory.remove(0);
+        }
+        
+        Log.d(TAG, "Component " + componentId + " execution recorded: " + 
+              (success ? "success" : "failure") + 
+              ", latency: " + latencyMs + "ms, confidence: " + confidenceScore);
+    }
+    
+    public ComponentQualityMetrics getComponentMetrics(String componentId) {
+        return componentMetrics.get(componentId);
+    }
+    
+    public Map<String, ComponentQualityMetrics> getAllComponentMetrics() {
+        return new HashMap<>(componentMetrics);
+    }
+    
+    public float getComponentQualityScore(String componentId) {
+        ComponentQualityMetrics metrics = componentMetrics.get(componentId);
+        if (metrics == null) {
+            return 0.5f;
+        }
+        return metrics.getQualityScore();
+    }
+    
+    public boolean shouldDeprioritize(String componentId) {
+        float qualityScore = getComponentQualityScore(componentId);
+        return qualityScore < 0.4f;
+    }
+    
+    public static class ComponentQualityMetrics {
+        public final String componentId;
+        public int totalExecutions;
+        public int successfulExecutions;
+        public long totalLatency;
+        public float averageLatency;
+        public float averageConfidence;
+        public float successRate;
+        
+        private long minLatency = Long.MAX_VALUE;
+        private long maxLatency = 0;
+        private float totalConfidence = 0;
+        
+        public ComponentQualityMetrics(String componentId) {
+            this.componentId = componentId;
+        }
+        
+        public void recordExecution(long latencyMs, float confidenceScore, boolean success) {
+            totalExecutions++;
+            if (success) {
+                successfulExecutions++;
+            }
+            
+            totalLatency += latencyMs;
+            minLatency = Math.min(minLatency, latencyMs);
+            maxLatency = Math.max(maxLatency, latencyMs);
+            averageLatency = (float) totalLatency / totalExecutions;
+            
+            totalConfidence += confidenceScore;
+            averageConfidence = totalConfidence / totalExecutions;
+            
+            successRate = (float) successfulExecutions / totalExecutions;
+        }
+        
+        public float getQualityScore() {
+            float latencyScore = calculateLatencyScore();
+            float confidenceScore = averageConfidence;
+            
+            return (successRate * 0.5f) + (confidenceScore * 0.3f) + (latencyScore * 0.2f);
+        }
+        
+        private float calculateLatencyScore() {
+            if (averageLatency < 100) return 1.0f;
+            if (averageLatency < 500) return 0.8f;
+            if (averageLatency < 1000) return 0.6f;
+            if (averageLatency < 2000) return 0.4f;
+            return 0.2f;
+        }
+    }
+    
+    public static class PerformanceRecord {
+        public final String componentId;
+        public final long latencyMs;
+        public final float confidenceScore;
+        public final boolean success;
+        public final long timestamp;
+        
+        public PerformanceRecord(String componentId, long latencyMs, 
+                                float confidenceScore, boolean success, long timestamp) {
+            this.componentId = componentId;
+            this.latencyMs = latencyMs;
+            this.confidenceScore = confidenceScore;
+            this.success = success;
+            this.timestamp = timestamp;
+        }
     }
 }

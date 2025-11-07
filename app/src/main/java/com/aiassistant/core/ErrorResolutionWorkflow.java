@@ -3,6 +3,10 @@ package com.aiassistant.core;
 import android.content.Context;
 import android.util.Log;
 
+import com.aiassistant.core.orchestration.ProblemSolvingBroker;
+import com.aiassistant.core.orchestration.ProblemTicket;
+import com.aiassistant.core.orchestration.StateDiff;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +27,9 @@ public class ErrorResolutionWorkflow {
     
     // Resolution strategies mapped by error type
     private Map<String, ResolutionStrategy> resolutionStrategies;
+    
+    // Groq integration for advanced problem solving
+    private ProblemSolvingBroker problemSolvingBroker;
     
     // System state
     private boolean isRunning = false;
@@ -46,6 +53,10 @@ public class ErrorResolutionWorkflow {
         registerDefaultStrategies();
         
         Log.i(TAG, "ErrorResolutionWorkflow initialized");
+    }
+    
+    public void setProblemSolvingBroker(ProblemSolvingBroker broker) {
+        this.problemSolvingBroker = broker;
     }
     
     /**
@@ -221,6 +232,60 @@ public class ErrorResolutionWorkflow {
      */
     public List<ErrorRecord> getErrorHistory() {
         return new ArrayList<>(errorHistory);
+    }
+    
+    public boolean handleStateDiff(StateDiff diff) {
+        if (!isRunning) {
+            Log.w(TAG, "Cannot handle diff: ErrorResolutionWorkflow not running");
+            return false;
+        }
+        
+        String errorType = "STATE_DIFF_" + diff.getSeverity().name();
+        String message = diff.getDescription() + " (fields: " + diff.getFieldDiffs().size() + ")";
+        
+        ErrorRecord record = new ErrorRecord(
+            errorType,
+            message,
+            diff.getComponentId(),
+            diff.getTimestamp()
+        );
+        
+        errorHistory.add(record);
+        
+        Log.w(TAG, "State diff detected - Component: " + diff.getComponentId() + 
+              ", Severity: " + diff.getSeverity() + ", Fields: " + diff.getFieldDiffs().size());
+        
+        boolean resolved = resolveError(record);
+        
+        if (!resolved && diff.getSeverity() == StateDiff.Severity.CRITICAL) {
+            escalateToGroq(record, diff);
+        }
+        
+        return resolved;
+    }
+    
+    private void escalateToGroq(ErrorRecord record, StateDiff diff) {
+        if (problemSolvingBroker == null) {
+            Log.w(TAG, "Cannot escalate: ProblemSolvingBroker not set");
+            return;
+        }
+        
+        Map<String, Object> context = new HashMap<>();
+        context.put("severity", diff.getSeverity().name());
+        context.put("field_diffs", diff.getFieldDiffs());
+        context.put("expected_state", diff.getExpectedState());
+        context.put("actual_state", diff.getActualState());
+        
+        ProblemTicket ticket = new ProblemTicket(
+            record.source,
+            record.errorType,
+            record.message,
+            context
+        );
+        
+        problemSolvingBroker.submitProblem(ticket);
+        
+        Log.i(TAG, "Problem escalated to Groq: " + ticket.getTicketId());
     }
     
     /**

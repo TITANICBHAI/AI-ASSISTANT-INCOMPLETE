@@ -230,6 +230,10 @@
             </intent-filter>
         </service>
         
+        <service
+            android:name=".core.orchestration.CentralAIOrchestrator"
+            android:exported="false" />
+        
         <!-- Broadcast Receivers -->
         <receiver 
             android:name=".receivers.PhoneStateReceiver"

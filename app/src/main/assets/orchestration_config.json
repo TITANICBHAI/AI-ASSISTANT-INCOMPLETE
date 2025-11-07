@@ -1,0 +1,90 @@
+{
+  "orchestration": {
+    "enabled": true,
+    "mode": "coordinated",
+    "health_check_interval_seconds": 60,
+    "diff_check_interval_seconds": 30,
+    "max_concurrent_pipelines": 5
+  },
+  "circuit_breakers": {
+    "default_failure_threshold": 5,
+    "default_cooldown_ms": 60000,
+    "per_component": {
+      "GameAnalyzer": {
+        "failure_threshold": 3,
+        "cooldown_ms": 30000
+      },
+      "VoiceProcessor": {
+        "failure_threshold": 5,
+        "cooldown_ms": 45000
+      }
+    }
+  },
+  "pipelines": [
+    {
+      "name": "game_analysis",
+      "type": "sequential",
+      "stages": [
+        {"component": "ScreenCapture", "critical": true},
+        {"component": "GameAnalyzer", "critical": true},
+        {"component": "BehaviorDetector", "critical": false},
+        {"component": "ActionRecommender", "critical": false}
+      ],
+      "triggers": ["screen_change", "periodic:10s"]
+    },
+    {
+      "name": "voice_processing",
+      "type": "sequential",
+      "stages": [
+        {"component": "VoiceRecognizer", "critical": true},
+        {"component": "CommandProcessor", "critical": true},
+        {"component": "ResponseGenerator", "critical": true},
+        {"component": "VoiceSynthesizer", "critical": true}
+      ],
+      "triggers": ["voice_detected", "user_command"]
+    },
+    {
+      "name": "ambient_monitoring",
+      "type": "parallel",
+      "stages": [
+        {"component": "NetworkMonitor", "critical": false},
+        {"component": "BatteryMonitor", "critical": false},
+        {"component": "ContextAnalyzer", "critical": false}
+      ],
+      "triggers": ["periodic:30s"]
+    },
+    {
+      "name": "error_recovery",
+      "type": "sequential",
+      "stages": [
+        {"component": "ErrorDetector", "critical": true},
+        {"component": "DiagnosticAnalyzer", "critical": true},
+        {"component": "ResolutionEngine", "critical": false},
+        {"component": "GroqProblemSolver", "critical": false}
+      ],
+      "triggers": ["component_error", "health_check_failed"]
+    }
+  ],
+  "validation_contracts": [
+    {
+      "validator": "VoiceValidator",
+      "validates": ["VoiceRecognizer", "CommandProcessor"],
+      "check_type": "output_quality"
+    },
+    {
+      "validator": "GameStateValidator",
+      "validates": ["GameAnalyzer", "BehaviorDetector"],
+      "check_type": "consistency"
+    }
+  ],
+  "groq_integration": {
+    "fallback_enabled": true,
+    "auto_escalate_after_retries": 3,
+    "problem_categories": [
+      "component_error",
+      "state_mismatch",
+      "performance_degradation",
+      "integration_failure"
+    ]
+  }
+}
