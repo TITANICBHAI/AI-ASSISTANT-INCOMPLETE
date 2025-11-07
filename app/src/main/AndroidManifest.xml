@@ -130,6 +130,21 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         
+        <!-- Learning Activities -->
+        <activity
+            android:name=".ui.learning.VoiceTeachingActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="Voice Teaching Lab"
+            android:theme="@style/AppTheme" />
+        
+        <activity
+            android:name=".ui.learning.ImageLabelingActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="Image Labeling Lab"
+            android:theme="@style/AppTheme" />
+        
         <!-- Other Activities -->
         <activity
             android:name=".ui.speech.SpeechSynthesisDemoActivity"
