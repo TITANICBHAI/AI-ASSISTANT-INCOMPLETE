@@ -3,7 +3,7 @@ package com.aiassistant.core.ai;
 import android.app.Application;
 import android.util.Log;
 
-import com.aiassistant.data.database.AppDatabase;
+import com.aiassistant.data.AppDatabase;
 
 /**
  * Main Application class for the AI Assistant.
