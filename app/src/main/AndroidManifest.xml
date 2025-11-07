@@ -206,6 +206,15 @@
             android:name=".security.AntiDetectionService"
             android:exported="false" />
         
+        <service
+            android:name=".services.AICallService"
+            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.telecom.InCallService" />
+            </intent-filter>
+        </service>
+        
         <!-- Broadcast Receivers -->
         <receiver 
             android:name=".receivers.PhoneStateReceiver"
@@ -215,6 +224,10 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
+        
+        <receiver 
+            android:name=".services.InactivityDetector$InactivityAlarmReceiver"
+            android:exported="false" />
         
         <receiver 
             android:name=".receivers.BootCompletedReceiver"
