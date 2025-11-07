@@ -1,0 +1,9 @@
+{
+  "api_key_encrypted": true,
+  "model": "llama-3.3-70b-versatile",
+  "learning_mode": "hybrid",
+  "confidence_threshold": 0.75,
+  "fallback_to_groq": true,
+  "learn_from_groq": true,
+  "independence_target": true
+}
