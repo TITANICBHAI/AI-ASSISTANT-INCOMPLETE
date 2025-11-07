@@ -7,6 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.aiassistant.data.models.AIAction;
+import com.aiassistant.data.models.CallerProfile;
 import com.aiassistant.data.models.GameState;
 import com.aiassistant.data.models.ScreenActionEntity;
 import com.aiassistant.data.models.TouchPath;
@@ -18,12 +19,13 @@ import com.aiassistant.data.models.UIElement;
 @Database(
     entities = {
         AIAction.class,
+        CallerProfile.class,
         GameState.class,
         ScreenActionEntity.class,
         TouchPath.class,
         UIElement.class
     },
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -80,4 +82,10 @@ public abstract class AppDatabase extends RoomDatabase {
      * @return UIElementDao
      */
     public abstract UIElementDao uiElementDao();
+
+    /**
+     * Abstract method to access the CallerProfileDao
+     * @return CallerProfileDao
+     */
+    public abstract CallerProfileDao callerProfileDao();
 }

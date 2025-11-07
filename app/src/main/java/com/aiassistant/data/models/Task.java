@@ -6,7 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.aiassistant.data.database.Converters;
+import com.aiassistant.data.converters.Converters;
 
 import java.util.Date;
 

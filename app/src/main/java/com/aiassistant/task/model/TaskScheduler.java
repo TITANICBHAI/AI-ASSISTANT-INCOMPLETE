@@ -2,8 +2,8 @@ package com.aiassistant.task.model;
 
 import android.content.Context;
 
+import com.aiassistant.data.AppDatabase;
 import com.aiassistant.data.models.ScheduledTask;
-import com.aiassistant.data.database.AppDatabase;
 
 import java.util.List;
 

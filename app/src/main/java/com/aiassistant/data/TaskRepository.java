@@ -3,7 +3,7 @@ package com.aiassistant.data;
 import android.content.Context;
 import android.util.Log;
 
-import com.aiassistant.data.database.AppDatabase;
+import com.aiassistant.data.AppDatabase;
 import com.aiassistant.data.models.GameState;
 import com.aiassistant.data.models.Task;
 import com.aiassistant.data.models.UIElement;
