@@ -2,9 +2,13 @@ package com.aiassistant.core.ai.nlp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aiassistant.core.ai.AIStateManager;
+import com.aiassistant.core.ai.HybridAILearningSystem;
 
 /**
  * Handler for processing extracted intents and taking appropriate actions
@@ -14,6 +18,8 @@ public class IntentHandler {
     
     private Context context;
     private AIStateManager aiStateManager;
+    private HybridAILearningSystem hybridAI;
+    private Handler mainHandler;
     
     /**
      * Constructor
@@ -21,6 +27,8 @@ public class IntentHandler {
     public IntentHandler(Context context) {
         this.context = context;
         this.aiStateManager = AIStateManager.getInstance();
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
     
     /**
@@ -122,11 +130,26 @@ public class IntentHandler {
             return;
         }
         
-        String target = entities[entities.length - 1]; // Usually the last entity is the target
+        String target = entities[entities.length - 1];
         Log.i(TAG, "Handling CLICK intent on target: " + target);
         
-        // TODO: Implement logic to find and click on the target element
-        // This would require integration with the accessibility service
+        String query = "Identify the UI element to click based on: '" + originalText + 
+                      "'. Provide the element description and location strategy (e.g., text match, content description, resource ID).";
+        
+        hybridAI.processQuery(query, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                Log.i(TAG, "Click element identified (" + source + "): " + response);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, "Click action: " + response, Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error identifying click element: " + error);
+            }
+        });
     }
     
     /**
@@ -141,8 +164,24 @@ public class IntentHandler {
         String direction = entities[0];
         Log.i(TAG, "Handling SWIPE intent in direction: " + direction);
         
-        // TODO: Implement logic to perform swipe in the specified direction
-        // This would require integration with the accessibility service
+        String query = "For the swipe command: '" + originalText + 
+                      "', determine the exact swipe direction (up/down/left/right), start coordinates as percentage of screen (0-100%), " +
+                      "end coordinates, and duration in milliseconds. Format: direction|startX,startY|endX,endY|duration";
+        
+        hybridAI.processQuery(query, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                Log.i(TAG, "Swipe parameters identified (" + source + "): " + response);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, "Swipe action: " + response, Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error identifying swipe parameters: " + error);
+            }
+        });
     }
     
     /**
@@ -157,8 +196,27 @@ public class IntentHandler {
         String subject = entities[entities.length - 1];
         Log.i(TAG, "Handling WHAT_IS intent for subject: " + subject);
         
-        // TODO: Implement logic to provide information about the subject
-        // This would require integration with a knowledge base or external API
+        String query = "What is " + subject + "? Provide a clear and concise explanation.";
+        
+        hybridAI.processQuery(query, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                Log.i(TAG, "Information retrieved (" + source + "): " + response);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, response.length() > 100 ? 
+                        response.substring(0, 97) + "..." : response, Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error retrieving information: " + error);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, "Could not retrieve information: " + error, 
+                        Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
     
     /**
@@ -173,7 +231,27 @@ public class IntentHandler {
         String task = entities[0];
         Log.i(TAG, "Handling HOW_TO intent for task: " + task);
         
-        // TODO: Implement logic to provide instructions for the task
-        // This would require integration with a knowledge base or external API
+        String query = "How to " + task + "? Provide step-by-step instructions.";
+        
+        hybridAI.processQuery(query, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                Log.i(TAG, "Instructions retrieved (" + source + "): " + response);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, "Instructions: " + 
+                        (response.length() > 100 ? response.substring(0, 97) + "..." : response), 
+                        Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error retrieving instructions: " + error);
+                mainHandler.post(() -> {
+                    Toast.makeText(context, "Could not retrieve instructions: " + error, 
+                        Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 }

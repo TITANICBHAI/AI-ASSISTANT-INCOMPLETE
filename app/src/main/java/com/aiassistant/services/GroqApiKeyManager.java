@@ -102,6 +102,12 @@ public class GroqApiKeyManager {
     }
     
     public String getApiKey() {
+        String envApiKey = System.getenv("GROQ_API_KEY");
+        if (envApiKey != null && !envApiKey.isEmpty()) {
+            Log.d(TAG, "Using GROQ_API_KEY from environment variable");
+            return envApiKey;
+        }
+        
         String encryptedKey = preferences.getString(KEY_API_KEY, null);
         
         if (encryptedKey == null) {

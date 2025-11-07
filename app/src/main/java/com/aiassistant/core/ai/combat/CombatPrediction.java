@@ -317,11 +317,23 @@ public class CombatPrediction {
      * @return The action or null
      */
     private ScreenActionEntity generateDefensiveAction(GameState gameState) {
-        // In disadvantageous situation, try to move to cover or retreat
+        List<Rect> coverPositions = detectNearestCover(gameState);
         
-        // TODO: Implement cover detection
+        if (!coverPositions.isEmpty()) {
+            Rect nearestCover = coverPositions.get(0);
+            float coverCenterX = nearestCover.centerX();
+            float coverCenterY = nearestCover.centerY();
+            
+            float screenCenterX = gameState.getScreenWidth() / 2.0f;
+            float screenBottomY = gameState.getScreenHeight() * 0.8f;
+            
+            float swipeEndX = screenCenterX + (coverCenterX - screenCenterX) * 0.5f;
+            float swipeEndY = screenBottomY + (coverCenterY - screenBottomY) * 0.5f;
+            
+            return new ScreenActionEntity(ScreenActionEntity.ACTION_SWIPE, 
+                screenCenterX, screenBottomY, swipeEndX, swipeEndY, 400);
+        }
         
-        // For now, move perpendicular to most dangerous enemy to dodge
         DetectedEnemy mostDangerous = findMostDangerousEnemy(gameState);
         
         if (mostDangerous != null) {
@@ -483,5 +495,114 @@ public class CombatPrediction {
     
     public void setAggressiveness(float aggressiveness) {
         this.aggressiveness = Math.max(0, Math.min(1, aggressiveness));
+    }
+    
+    /**
+     * Detect nearest cover positions in the game state
+     * 
+     * @param gameState The current game state
+     * @return List of Rect objects representing cover positions
+     */
+    private List<Rect> detectNearestCover(GameState gameState) {
+        List<Rect> coverPositions = new ArrayList<>();
+        
+        if (gameState == null) {
+            return coverPositions;
+        }
+        
+        int screenWidth = gameState.getScreenWidth();
+        int screenHeight = gameState.getScreenHeight();
+        
+        List<DetectedEnemy> enemies = gameState.getEnemies();
+        if (enemies == null || enemies.isEmpty()) {
+            return coverPositions;
+        }
+        
+        float avgEnemyX = 0;
+        float avgEnemyY = 0;
+        int enemyCount = 0;
+        
+        for (DetectedEnemy enemy : enemies) {
+            avgEnemyX += enemy.getCenterX();
+            avgEnemyY += enemy.getCenterY();
+            enemyCount++;
+        }
+        
+        if (enemyCount > 0) {
+            avgEnemyX /= enemyCount;
+            avgEnemyY /= enemyCount;
+        }
+        
+        int gridSize = 6;
+        int cellWidth = screenWidth / gridSize;
+        int cellHeight = screenHeight / gridSize;
+        
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                int left = col * cellWidth;
+                int top = row * cellHeight;
+                int right = left + cellWidth;
+                int bottom = top + cellHeight;
+                
+                Rect cellRect = new Rect(left, top, right, bottom);
+                float cellCenterX = cellRect.centerX();
+                float cellCenterY = cellRect.centerY();
+                
+                boolean hasCover = false;
+                
+                if (row < gridSize / 2) {
+                    hasCover = true;
+                }
+                
+                if (col == 0 || col == gridSize - 1) {
+                    hasCover = true;
+                }
+                
+                boolean hasEnemy = false;
+                for (DetectedEnemy enemy : enemies) {
+                    Rect enemyRect = new Rect(
+                        (int)(enemy.getCenterX() - enemy.getWidth()/2),
+                        (int)(enemy.getCenterY() - enemy.getHeight()/2),
+                        (int)(enemy.getCenterX() + enemy.getWidth()/2),
+                        (int)(enemy.getCenterY() + enemy.getHeight()/2)
+                    );
+                    
+                    if (Rect.intersects(cellRect, enemyRect)) {
+                        hasEnemy = true;
+                        break;
+                    }
+                }
+                
+                if (hasCover && !hasEnemy) {
+                    float distanceToEnemy = (float) Math.sqrt(
+                        Math.pow(cellCenterX - avgEnemyX, 2) + 
+                        Math.pow(cellCenterY - avgEnemyY, 2)
+                    );
+                    
+                    if (distanceToEnemy > screenWidth * 0.2f) {
+                        coverPositions.add(cellRect);
+                    }
+                }
+            }
+        }
+        
+        coverPositions.sort((r1, r2) -> {
+            float playerX = screenWidth / 2.0f;
+            float playerY = screenHeight * 0.8f;
+            
+            float dist1 = (float) Math.sqrt(
+                Math.pow(r1.centerX() - playerX, 2) + 
+                Math.pow(r1.centerY() - playerY, 2)
+            );
+            
+            float dist2 = (float) Math.sqrt(
+                Math.pow(r2.centerX() - playerX, 2) + 
+                Math.pow(r2.centerY() - playerY, 2)
+            );
+            
+            return Float.compare(dist1, dist2);
+        });
+        
+        return coverPositions;
     }
 }

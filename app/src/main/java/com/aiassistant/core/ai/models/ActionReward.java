@@ -45,7 +45,9 @@ public class ActionReward {
             // Penalties
             reward += calculatePenalties(action, previousState, currentState);
             
-            // TODO: Add reward components for specific game mechanics
+            // Combat and objective rewards
+            reward += calculateCombatReward(action, previousState, currentState);
+            reward += calculateObjectiveReward(action, previousState, currentState);
             
             return reward;
             
@@ -66,14 +68,87 @@ public class ActionReward {
     private static float calculateExplorationReward(AIAction action, GameState previousState, GameState currentState) {
         float reward = 0.0f;
         
-        // Reward for exploring new areas or discovering new elements
-        boolean isNewArea = false;  // TODO: Implement detection of new areas
+        boolean isNewArea = isNewAreaDetected(previousState, currentState);
         
         if (isNewArea) {
             reward += 1.0f * WEIGHT_EXPLORATION;
         }
         
         return reward;
+    }
+    
+    /**
+     * Detect if the current state represents a new area
+     * 
+     * @param previousState The previous game state
+     * @param currentState The current game state
+     * @return true if new area detected
+     */
+    private static boolean isNewAreaDetected(GameState previousState, GameState currentState) {
+        if (previousState == null || currentState == null) {
+            return false;
+        }
+        
+        String prevScreenHash = generateScreenHash(previousState);
+        String currScreenHash = generateScreenHash(currentState);
+        
+        if (prevScreenHash == null || currScreenHash == null) {
+            return false;
+        }
+        
+        int hashDifference = hammingDistance(prevScreenHash, currScreenHash);
+        
+        float similarityThreshold = 0.3f;
+        float similarity = 1.0f - (hashDifference / (float) Math.max(prevScreenHash.length(), 1));
+        
+        return similarity < (1.0f - similarityThreshold);
+    }
+    
+    /**
+     * Generate a simple hash of the screen state
+     */
+    private static String generateScreenHash(GameState state) {
+        if (state == null) {
+            return null;
+        }
+        
+        StringBuilder hash = new StringBuilder();
+        
+        String screenText = state.getScreenText();
+        if (screenText != null && !screenText.isEmpty()) {
+            hash.append(screenText.hashCode());
+        } else {
+            hash.append("0");
+        }
+        
+        hash.append("-");
+        hash.append(state.getEnemies() != null ? state.getEnemies().size() : 0);
+        hash.append("-");
+        hash.append((int)state.getPlayerHealth());
+        hash.append("-");
+        hash.append((int)state.getPlayerAmmo());
+        
+        return hash.toString();
+    }
+    
+    /**
+     * Calculate Hamming distance between two strings
+     */
+    private static int hammingDistance(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return 0;
+        }
+        
+        int distance = Math.abs(s1.length() - s2.length());
+        int minLength = Math.min(s1.length(), s2.length());
+        
+        for (int i = 0; i < minLength; i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                distance++;
+            }
+        }
+        
+        return distance;
     }
     
     /**
@@ -198,5 +273,98 @@ public class ActionReward {
         // Penalty for repeated actions (would need action history)
         
         return penalty;
+    }
+    
+    /**
+     * Calculate combat reward component
+     * 
+     * @param action The action taken
+     * @param previousState The previous game state
+     * @param currentState The current game state
+     * @return The combat reward component
+     */
+    private static float calculateCombatReward(AIAction action, GameState previousState, GameState currentState) {
+        float reward = 0.0f;
+        
+        if (previousState == null || currentState == null) {
+            return reward;
+        }
+        
+        int prevEnemyCount = previousState.getEnemies() != null ? previousState.getEnemies().size() : 0;
+        int currEnemyCount = currentState.getEnemies() != null ? currentState.getEnemies().size() : 0;
+        
+        int enemiesEliminated = prevEnemyCount - currEnemyCount;
+        
+        if (enemiesEliminated > 0) {
+            reward += enemiesEliminated * 2.0f * WEIGHT_COMBAT;
+            Log.d(TAG, "Combat reward: eliminated " + enemiesEliminated + " enemies");
+        }
+        
+        float prevHealth = previousState.getPlayerHealth();
+        float currHealth = currentState.getPlayerHealth();
+        float healthChange = currHealth - prevHealth;
+        
+        if (healthChange > 0) {
+            reward += healthChange * 0.01f * WEIGHT_COMBAT;
+        } else if (healthChange < 0) {
+            reward += healthChange * 0.02f * WEIGHT_COMBAT;
+        }
+        
+        boolean wasInCombat = previousState.isInCombat();
+        boolean isInCombat = currentState.isInCombat();
+        
+        if (wasInCombat && !isInCombat && currHealth > prevHealth * 0.5f) {
+            reward += 1.0f * WEIGHT_COMBAT;
+            Log.d(TAG, "Combat reward: survived combat encounter");
+        }
+        
+        return reward;
+    }
+    
+    /**
+     * Calculate objective reward component
+     * 
+     * @param action The action taken
+     * @param previousState The previous game state
+     * @param currentState The current game state
+     * @return The objective reward component
+     */
+    private static float calculateObjectiveReward(AIAction action, GameState previousState, GameState currentState) {
+        float reward = 0.0f;
+        
+        if (previousState == null || currentState == null) {
+            return reward;
+        }
+        
+        boolean objectiveProgress = false;
+        
+        String prevText = previousState.getScreenText();
+        String currText = currentState.getScreenText();
+        
+        if (prevText != null && currText != null) {
+            String[] objectiveKeywords = {"complete", "mission", "objective", "win", "victory", "success", "cleared"};
+            
+            for (String keyword : objectiveKeywords) {
+                if (!prevText.toLowerCase().contains(keyword) && currText.toLowerCase().contains(keyword)) {
+                    objectiveProgress = true;
+                    break;
+                }
+            }
+        }
+        
+        if (objectiveProgress) {
+            reward += 3.0f * WEIGHT_OBJECTIVE;
+            Log.d(TAG, "Objective reward: objective progress detected");
+        }
+        
+        float prevAmmo = previousState.getPlayerAmmo();
+        float currAmmo = currentState.getPlayerAmmo();
+        
+        if (currAmmo > prevAmmo) {
+            reward += 0.2f * WEIGHT_RESOURCE;
+            Log.d(TAG, "Resource reward: collected ammo/resources");
+        }
+        
+        return reward;
     }
 }
