@@ -13,8 +13,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.aiassistant.AIApplication;
 import com.aiassistant.R;
+import com.aiassistant.core.ai.AIAssistantApplication;
 import com.aiassistant.ui.MainActivity;
 import com.aiassistant.utils.Constants;
 
@@ -80,8 +80,9 @@ public class AIProcessingService extends Service {
         // Schedule AI processing tasks
         executor.scheduleAtFixedRate(() -> {
             try {
-                if (AIApplication.getAIStateManager() != null) {
-                    AIApplication.getAIStateManager().processFrame();
+                if (AIAssistantApplication.getInstance() != null && 
+                    AIAssistantApplication.getInstance().getAIStateManager() != null) {
+                    AIAssistantApplication.getInstance().getAIStateManager().processFrame();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error in AI processing", e);

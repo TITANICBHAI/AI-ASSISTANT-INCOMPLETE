@@ -248,69 +248,80 @@ public class ResearchManager {
      * Search for relevant sources for a query
      */
     private List<SourceInfo> searchForSources(String query) {
-        List<SourceInfo> sources = new ArrayList<>();
+        Future<List<SourceInfo>> searchFuture = executor.submit(new SearchTask(query));
         
         try {
-            // In a real implementation, this would use actual search APIs
-            // For this implementation, we'll use a simulated search
-            
-            // Encode the query for URL
-            String encodedQuery = URLEncoder.encode(query, "UTF-8");
-            
-            // Create URL for search
-            URL url = new URL("https://www.googleapis.com/customsearch/v1?q=" + encodedQuery);
-            
-            // Open connection
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-            
-            // Check response code
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                // Read response
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-                
-                // Parse JSON response
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                JSONArray items = jsonResponse.getJSONArray("items");
-                
-                // Process search results
-                for (int i = 0; i < Math.min(items.length(), maxSearchResults); i++) {
-                    JSONObject item = items.getJSONObject(i);
-                    SourceInfo source = new SourceInfo(item.getString("link"));
-                    source.title = item.getString("title");
-                    source.snippet = item.getString("snippet");
-                    source.relevanceScore = 0.8 - (0.1 * i); // Simulate decreasing relevance
-                    
-                    sources.add(source);
-                }
-            } else {
-                // Handle fallback search method if the primary fails
-                sources = fallbackSearch(query);
-            }
-            
-            connection.disconnect();
-            
+            return searchFuture.get(researchTimeoutSeconds, TimeUnit.SECONDS);
         } catch (Exception e) {
-            Log.e(TAG, "Error searching for sources: " + e.getMessage());
+            Log.e(TAG, "Error or timeout during search: " + e.getMessage());
             
-            // Fallback to alternate search method
             try {
-                sources = fallbackSearch(query);
+                return fallbackSearch(query);
             } catch (Exception ex) {
                 Log.e(TAG, "Fallback search also failed: " + ex.getMessage());
+                return new ArrayList<>();
             }
         }
+    }
+    
+    /**
+     * Search task that performs HTTP network operations on background thread
+     */
+    private class SearchTask implements Callable<List<SourceInfo>> {
+        private final String query;
         
-        return sources;
+        public SearchTask(String query) {
+            this.query = query;
+        }
+        
+        @Override
+        public List<SourceInfo> call() throws Exception {
+            List<SourceInfo> sources = new ArrayList<>();
+            
+            try {
+                String encodedQuery = URLEncoder.encode(query, "UTF-8");
+                URL url = new URL("https://www.googleapis.com/customsearch/v1?q=" + encodedQuery);
+                
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    JSONArray items = jsonResponse.getJSONArray("items");
+                    
+                    for (int i = 0; i < Math.min(items.length(), maxSearchResults); i++) {
+                        JSONObject item = items.getJSONObject(i);
+                        SourceInfo source = new SourceInfo(item.getString("link"));
+                        source.title = item.getString("title");
+                        source.snippet = item.getString("snippet");
+                        source.relevanceScore = 0.8 - (0.1 * i);
+                        sources.add(source);
+                    }
+                } else {
+                    sources = fallbackSearch(query);
+                }
+                
+                connection.disconnect();
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error in SearchTask: " + e.getMessage());
+                sources = fallbackSearch(query);
+            }
+            
+            return sources;
+        }
     }
     
     /**

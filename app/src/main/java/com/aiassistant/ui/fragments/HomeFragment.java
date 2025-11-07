@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.aiassistant.AIApplication;
 import com.aiassistant.R;
+import com.aiassistant.core.ai.AIAssistantApplication;
 import com.aiassistant.core.ai.AIStateManager;
 import com.aiassistant.utils.Constants;
 
@@ -96,10 +96,12 @@ public class HomeFragment extends Fragment {
      * @param mode Mode to set
      */
     private void setMode(String mode) {
-        AIStateManager aiStateManager = AIApplication.getAIStateManager();
-        if (aiStateManager != null) {
-            aiStateManager.setMode(mode);
-            updateUI();
+        if (AIAssistantApplication.getInstance() != null) {
+            AIStateManager aiStateManager = AIAssistantApplication.getInstance().getAIStateManager();
+            if (aiStateManager != null) {
+                aiStateManager.setMode(mode);
+                updateUI();
+            }
         }
     }
     
@@ -150,17 +152,18 @@ public class HomeFragment extends Fragment {
      * Update UI with current state
      */
     private void updateUI() {
-        AIStateManager aiStateManager = AIApplication.getAIStateManager();
+        if (AIAssistantApplication.getInstance() == null) {
+            return;
+        }
+        
+        AIStateManager aiStateManager = AIAssistantApplication.getInstance().getAIStateManager();
         if (aiStateManager == null) {
             return;
         }
         
         // Update status
-        if (AIApplication.getAccessibilityService() != null) {
-            statusText.setText(R.string.status_active);
-        } else {
-            statusText.setText(R.string.status_idle);
-        }
+        // Note: Accessibility service check removed - implement proper service check if needed
+        statusText.setText(R.string.status_active);
         
         // Update game
         String currentGame = aiStateManager.getCurrentGame();

@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.aiassistant.AIApplication;
 import com.aiassistant.data.AppDatabase;
 import com.aiassistant.data.models.Game;
 
