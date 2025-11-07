@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonImageLabeling;
     private Button buttonOrchestrationDemo;
     private Button buttonPipelineManager;
+    private Button buttonGameAnalysis;
+    private Button buttonVoiceDemo;
+    private Button buttonJEELearning;
     
     // Components
     private AIStateManager aiStateManager;
@@ -51,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         buttonImageLabeling = findViewById(R.id.buttonImageLabeling);
         buttonOrchestrationDemo = findViewById(R.id.buttonOrchestrationDemo);
         buttonPipelineManager = findViewById(R.id.buttonPipelineManager);
+        buttonGameAnalysis = findViewById(R.id.buttonGameAnalysis);
+        buttonVoiceDemo = findViewById(R.id.buttonVoiceDemo);
+        buttonJEELearning = findViewById(R.id.buttonJEELearning);
         
         // Initialize components (but don't fail if VoiceManager has issues)
         try {
@@ -93,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         buttonImageLabeling.setOnClickListener(v -> openImageLabeling());
         buttonOrchestrationDemo.setOnClickListener(v -> openOrchestrationDemo());
         buttonPipelineManager.setOnClickListener(v -> openPipelineManager());
+        buttonGameAnalysis.setOnClickListener(v -> openGameAnalysis());
+        buttonVoiceDemo.setOnClickListener(v -> openVoiceDemo());
+        buttonJEELearning.setOnClickListener(v -> openJEELearning());
     }
     
     /**
@@ -167,6 +176,24 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, com.aiassistant.ui.PipelineManagerActivity.class);
         startActivity(intent);
         Log.d(TAG, "Opened Pipeline Manager Activity");
+    }
+    
+    private void openGameAnalysis() {
+        Intent intent = new Intent(this, com.aiassistant.ui.game.GameAnalysisDemoActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Game Analysis Demo Activity");
+    }
+    
+    private void openVoiceDemo() {
+        Intent intent = new Intent(this, com.aiassistant.ui.voice.VoiceIntegrationDemoActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Voice Integration Demo Activity");
+    }
+    
+    private void openJEELearning() {
+        Intent intent = new Intent(this, com.aiassistant.ai.features.education.jee.JEELearningActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened JEE Learning Activity");
     }
     
     @Override
