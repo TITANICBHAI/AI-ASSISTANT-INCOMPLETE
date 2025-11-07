@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import com.aiassistant.core.ai.HybridAILearningSystem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,6 +42,7 @@ public class CopilotSystem {
     private String currentGame;
     private GameProfile gameProfile;
     private List<CopilotStrategy> strategies;
+    private HybridAILearningSystem hybridAI;
     
     /**
      * Constructor
@@ -54,6 +57,7 @@ public class CopilotSystem {
         this.listeners = new ArrayList<>();
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.strategies = new ArrayList<>();
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
         
         // Initialize some default strategies
         initializeDefaultStrategies();
@@ -309,22 +313,49 @@ public class CopilotSystem {
             gameState.put("resources", Math.random() * 1000);
             gameState.put("movement_pattern", "standard");
             
-            // Apply strategies
-            for (CopilotStrategy strategy : strategies) {
-                String advice = strategy.getAdviceGenerator().generateAdvice(currentGame, gameState);
-                if (advice != null) {
-                    // Send to overlay view
-                    updateOverlay(advice);
-                    
-                    // Notify listeners
-                    for (CopilotListener listener : listeners) {
-                        listener.onAdviceGenerated(strategy.getName(), advice);
+            // Build context for AI analysis
+            String context = "Game: " + currentGame + ", State: " + gameState.toString();
+            
+            // Use HybridAI for intelligent game analysis
+            hybridAI.processQuery("Analyze this game situation and provide one strategic tip: " + context, 
+                                 null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+                @Override
+                public void onResponse(String response, String source) {
+                    if (response != null && !response.isEmpty()) {
+                        Log.d(TAG, "Received strategic tip from " + source + ": " + response);
+                        
+                        // Update overlay with AI-generated advice
+                        updateOverlay(response);
+                        
+                        // Notify listeners
+                        for (CopilotListener listener : listeners) {
+                            listener.onAdviceGenerated("AI_Strategy", response);
+                        }
                     }
-                    
-                    // One advice at a time is enough
-                    break;
                 }
-            }
+                
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "Error getting AI advice: " + error);
+                    
+                    // Fallback to local strategies
+                    for (CopilotStrategy strategy : strategies) {
+                        String advice = strategy.getAdviceGenerator().generateAdvice(currentGame, gameState);
+                        if (advice != null) {
+                            // Send to overlay view
+                            updateOverlay(advice);
+                            
+                            // Notify listeners
+                            for (CopilotListener listener : listeners) {
+                                listener.onAdviceGenerated(strategy.getName(), advice);
+                            }
+                            
+                            // One advice at a time is enough
+                            break;
+                        }
+                    }
+                }
+            });
         } catch (Exception e) {
             Log.e(TAG, "Error analyzing game state", e);
         }

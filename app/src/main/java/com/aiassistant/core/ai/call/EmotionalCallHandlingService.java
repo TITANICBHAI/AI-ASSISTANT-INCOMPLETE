@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.aiassistant.core.ai.AIStateManager;
+import com.aiassistant.core.ai.HybridAILearningSystem;
 import com.aiassistant.core.ai.memory.MemoryManager;
 import com.aiassistant.core.ai.neural.EmotionalIntelligenceModel;
 import com.aiassistant.data.models.CallerProfile;
@@ -28,6 +29,7 @@ public class EmotionalCallHandlingService {
     private final AIStateManager aiStateManager;
     private final MemoryManager memoryManager;
     private final CallerProfileRepository callerProfileRepository;
+    private HybridAILearningSystem hybridAI;
     
     // Emotional thresholds
     private static final float EMOTION_THRESHOLD_LOW = 0.3f;
@@ -44,6 +46,7 @@ public class EmotionalCallHandlingService {
         this.aiStateManager = AIStateManager.getInstance(context);
         this.memoryManager = MemoryManager.getInstance(context);
         this.callerProfileRepository = new CallerProfileRepository(context);
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
         
         // Initialize emotional model
         if (!emotionalModel.isModelLoaded()) {
@@ -403,10 +406,48 @@ public class EmotionalCallHandlingService {
             return "You're welcome! I'm happy to help.";
         }
         
-        // Respond based on dominant emotion
+        // Get dominant emotion
         String dominantEmotion = getDominantEmotion(emotions);
         float dominantStrength = emotions.getOrDefault(dominantEmotion, 0.0f);
         
+        // Use HybridAI for generating empathetic response
+        String context = "You are an AI assistant handling a phone call. The caller said: '" + speechText + "'. Their emotional state is: " + dominantEmotion + ".";
+        String[] response = new String[1];
+        final Object lock = new Object();
+        
+        hybridAI.processQuery(context + "\nRespond empathetically and naturally.", null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String generatedResponse, String source) {
+                synchronized (lock) {
+                    response[0] = generatedResponse;
+                    lock.notify();
+                }
+            }
+            
+            @Override
+            public void onError(String error) {
+                synchronized (lock) {
+                    response[0] = null;
+                    lock.notify();
+                }
+            }
+        });
+        
+        // Wait for response (with timeout)
+        synchronized (lock) {
+            try {
+                lock.wait(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted while waiting for HybridAI response", e);
+            }
+        }
+        
+        // If HybridAI provided a response, use it
+        if (response[0] != null && !response[0].isEmpty()) {
+            return response[0];
+        }
+        
+        // Fallback to local response based on dominant emotion
         if (dominantStrength > EMOTION_THRESHOLD_HIGH) {
             return generateEmotionalResponse(dominantEmotion, callerProfile);
         }

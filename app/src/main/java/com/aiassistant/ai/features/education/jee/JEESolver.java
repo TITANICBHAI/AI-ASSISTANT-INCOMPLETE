@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.aiassistant.core.ai.AIStateManager;
 import com.aiassistant.core.ai.AIStateManager.KnowledgeEntry;
+import com.aiassistant.core.ai.HybridAILearningSystem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +46,7 @@ public class JEESolver {
     private Context context;
     private AIStateManager aiStateManager;
     private ExecutorService executor;
+    private HybridAILearningSystem hybridAI;
     
     // Domain-specific knowledge and engines
     private Map<String, List<Formula>> formulasByDomain = new HashMap<>();
@@ -163,6 +165,7 @@ public class JEESolver {
         this.context = context.getApplicationContext();
         this.aiStateManager = AIStateManager.getInstance(context);
         this.executor = Executors.newFixedThreadPool(2);
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
         
         // Initialize domain-specific knowledge
         initializeKnowledge();
@@ -505,9 +508,16 @@ public class JEESolver {
                         solveChemistryProblem(problem, solution, callback);
                         break;
                     default:
-                        solution.explanation = "Unable to classify problem domain.";
-                        solution.isCorrect = false;
-                        solution.isVerified = false;
+                        // Fallback to AI-powered solving
+                        solveWithAI(problem, callback);
+                        return;
+                }
+                
+                // If local solving didn't produce a good solution, try AI
+                if (solution.answer == null || solution.answer.isEmpty() || !solution.isCorrect) {
+                    Log.d(TAG, "Local solution incomplete, trying AI-powered solving");
+                    solveWithAI(problem, callback);
+                    return;
                 }
                 
                 // Calculate solve time
@@ -529,6 +539,142 @@ public class JEESolver {
                 Log.e(TAG, "Error solving problem: " + e.getMessage(), e);
                 if (callback != null) {
                     callback.onSolveError(problem.id, "Error solving problem: " + e.getMessage());
+                }
+            }
+        });
+    }
+    
+    /**
+     * Solve problem using AI (HybridAILearningSystem)
+     * @param problem Problem to solve
+     * @param callback Callback for solution updates
+     */
+    private void solveWithAI(Problem problem, SolveCallback callback) {
+        Log.d(TAG, "Solving with AI: " + problem.domain + " problem");
+        
+        long startTime = System.currentTimeMillis();
+        
+        // Build comprehensive prompt
+        String prompt = "Solve this " + problem.domain + " problem step-by-step:\n\n" + 
+                       problem.text + "\n\n" +
+                       "Provide detailed solution with:\n" +
+                       "1. Step-by-step working\n" +
+                       "2. Clear explanations for each step\n" +
+                       "3. Final answer\n" +
+                       "4. Relevant formulas and concepts used";
+        
+        // Use HybridAI to solve
+        hybridAI.processQuery(prompt, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                try {
+                    Log.d(TAG, "AI solution received from " + source);
+                    
+                    // Create solution object
+                    Solution solution = new Solution(problem.id);
+                    
+                    // Parse response to extract steps and answer
+                    String[] lines = response.split("\n");
+                    StringBuilder currentStep = new StringBuilder();
+                    boolean inSteps = false;
+                    
+                    for (String line : lines) {
+                        String trimmed = line.trim();
+                        
+                        // Look for step patterns
+                        if (trimmed.matches("^(Step|\\d+\\.|\\d+\\))[:\\s].*")) {
+                            // Save previous step if exists
+                            if (currentStep.length() > 0) {
+                                String stepText = currentStep.toString().trim();
+                                solution.steps.add(new Step(
+                                    "Step " + (solution.steps.size() + 1),
+                                    stepText,
+                                    "AI-generated step"
+                                ));
+                                currentStep = new StringBuilder();
+                            }
+                            inSteps = true;
+                            currentStep.append(trimmed).append("\n");
+                        } else if (inSteps && !trimmed.isEmpty()) {
+                            currentStep.append(trimmed).append("\n");
+                        }
+                        
+                        // Look for answer patterns
+                        if (trimmed.toLowerCase().contains("answer") || 
+                            trimmed.toLowerCase().contains("final") ||
+                            trimmed.toLowerCase().contains("solution")) {
+                            
+                            // Try to extract the answer
+                            String[] parts = trimmed.split("[:=]");
+                            if (parts.length > 1) {
+                                solution.answer = parts[parts.length - 1].trim();
+                            }
+                        }
+                    }
+                    
+                    // Save final step if exists
+                    if (currentStep.length() > 0) {
+                        String stepText = currentStep.toString().trim();
+                        solution.steps.add(new Step(
+                            "Step " + (solution.steps.size() + 1),
+                            stepText,
+                            "AI-generated step"
+                        ));
+                    }
+                    
+                    // If no answer found in structured format, use last line
+                    if (solution.answer == null || solution.answer.isEmpty()) {
+                        for (int i = lines.length - 1; i >= 0; i--) {
+                            String line = lines[i].trim();
+                            if (!line.isEmpty()) {
+                                solution.answer = line;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Set full explanation
+                    solution.explanation = response;
+                    solution.isCorrect = true;
+                    solution.isVerified = false;
+                    
+                    // Add relevant concepts (extract from problem topics)
+                    solution.relatedConcepts.addAll(problem.topics);
+                    
+                    // Calculate solve time
+                    solution.solveTimeMs = System.currentTimeMillis() - startTime;
+                    
+                    // Save solution to problem
+                    problem.solution = solution;
+                    
+                    // Add to problem history
+                    problemHistory.add(problem);
+                    saveProblemHistory();
+                    
+                    // Notify completion
+                    if (callback != null) {
+                        // Notify each step
+                        for (Step step : solution.steps) {
+                            callback.onStepCompleted(problem.id, step.description, step.explanation);
+                        }
+                        callback.onSolveCompleted(problem.id, solution);
+                    }
+                    
+                    Log.d(TAG, "AI solution completed in " + solution.solveTimeMs + "ms");
+                    
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing AI solution", e);
+                    if (callback != null) {
+                        callback.onSolveError(problem.id, "Error processing AI solution: " + e.getMessage());
+                    }
+                }
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "AI solving error: " + error);
+                if (callback != null) {
+                    callback.onSolveError(problem.id, "AI solving failed: " + error);
                 }
             }
         });

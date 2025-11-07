@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.aiassistant.core.ai.AIStateManager;
+import com.aiassistant.core.ai.HybridAILearningSystem;
 import com.aiassistant.features.voice.ContextAwareVoiceCommand;
 import com.aiassistant.features.voice.SentientVoiceSystem;
 import com.aiassistant.services.AICallInitiationService;
@@ -29,6 +30,7 @@ public class VoiceCommandCallHandler {
     private CallHandlingSystem callHandlingSystem;
     private AICallInitiationService callInitiationService;
     private ResearchEnabledCallHandler researchHandler;
+    private HybridAILearningSystem hybridAI;
     
     // Voice command patterns for call commands
     private static final Pattern CALL_COMMAND_PATTERN = 
@@ -54,6 +56,7 @@ public class VoiceCommandCallHandler {
         this.callHandlingSystem = CallHandlingSystem.getInstance(context);
         this.callInitiationService = AICallInitiationService.getInstance(context);
         this.researchHandler = ResearchEnabledCallHandler.getInstance(context);
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
         
         // Register command patterns
         initializeCommandPatterns();
@@ -177,8 +180,88 @@ public class VoiceCommandCallHandler {
             return true;
         }
         
-        // Not a call-related command
-        return false;
+        // Fallback: Use HybridAI to parse the command
+        Log.d(TAG, "No pattern matched, using HybridAI to parse command");
+        
+        String prompt = "Parse this call command: " + userCommand + 
+                       ". Extract: action (call/answer/hangup), recipient name (if any), and whether AI should speak. " +
+                       "Return JSON format: {\"action\": \"call|answer|hangup\", \"recipient\": \"name or null\", \"aiSpeaking\": true|false}";
+        
+        final boolean[] handled = {false};
+        final Object lock = new Object();
+        
+        hybridAI.processQuery(prompt, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                try {
+                    // Parse JSON response
+                    if (response.contains("{") && response.contains("}")) {
+                        String jsonPart = response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1);
+                        
+                        // Simple JSON parsing
+                        boolean aiSpeaking = jsonPart.contains("\"aiSpeaking\": true") || jsonPart.contains("\"aiSpeaking\":true");
+                        String action = null;
+                        String recipient = null;
+                        
+                        if (jsonPart.contains("\"action\": \"call\"") || jsonPart.contains("\"action\":\"call\"")) {
+                            action = "call";
+                        } else if (jsonPart.contains("\"action\": \"answer\"") || jsonPart.contains("\"action\":\"answer\"")) {
+                            action = "answer";
+                        } else if (jsonPart.contains("\"action\": \"hangup\"") || jsonPart.contains("\"action\":\"hangup\"")) {
+                            action = "hangup";
+                        }
+                        
+                        // Extract recipient
+                        int recipientStart = jsonPart.indexOf("\"recipient\": \"");
+                        if (recipientStart > 0) {
+                            recipientStart += "\"recipient\": \"".length();
+                            int recipientEnd = jsonPart.indexOf("\"", recipientStart);
+                            if (recipientEnd > recipientStart) {
+                                recipient = jsonPart.substring(recipientStart, recipientEnd);
+                                if (recipient.equals("null")) recipient = null;
+                            }
+                        }
+                        
+                        // Execute action
+                        if ("call".equals(action) && recipient != null) {
+                            makeCall(recipient, aiSpeaking);
+                            handled[0] = true;
+                        } else if ("answer".equals(action)) {
+                            answerCall(aiSpeaking);
+                            handled[0] = true;
+                        } else if ("hangup".equals(action)) {
+                            hangUpCall();
+                            handled[0] = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing HybridAI response", e);
+                }
+                
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+            
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "HybridAI error: " + error);
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        });
+        
+        // Wait for response with timeout
+        synchronized (lock) {
+            try {
+                lock.wait(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted while waiting for HybridAI", e);
+            }
+        }
+        
+        return handled[0];
     }
     
     /**

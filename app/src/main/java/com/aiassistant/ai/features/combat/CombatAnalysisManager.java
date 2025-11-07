@@ -3,6 +3,8 @@ package com.aiassistant.ai.features.combat;
 import android.content.Context;
 import android.util.Log;
 
+import com.aiassistant.core.ai.HybridAILearningSystem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class CombatAnalysisManager implements CombatAnalysisFeature.CombatAnalys
     private final CombatAnalysisFeature combatAnalysisFeature;
     private final List<CombatRecommendationListener> recommendationListeners;
     private final List<CombatStatisticsListener> statisticsListeners;
+    private HybridAILearningSystem hybridAI;
     
     /**
      * Constructor
@@ -28,6 +31,7 @@ public class CombatAnalysisManager implements CombatAnalysisFeature.CombatAnalys
         this.combatAnalysisFeature = combatAnalysisFeature;
         this.recommendationListeners = new ArrayList<>();
         this.statisticsListeners = new ArrayList<>();
+        this.hybridAI = HybridAILearningSystem.getInstance(context);
         
         // Register as a listener
         combatAnalysisFeature.addListener(this);
@@ -160,6 +164,65 @@ public class CombatAnalysisManager implements CombatAnalysisFeature.CombatAnalys
             }
         }
         return null;
+    }
+    
+    /**
+     * Get AI-powered tactical recommendation for current combat situation
+     * @param combatContext Description of the combat situation
+     * @return Tactical recommendation as String
+     */
+    public String getTacticalRecommendation(String combatContext) {
+        if (!combatAnalysisFeature.isEnabled() || !combatAnalysisFeature.isInCombat()) {
+            return "Not currently in combat.";
+        }
+        
+        // Build comprehensive context
+        float currentDPS = getCurrentDPS();
+        float efficiency = getCombatEfficiency();
+        float duration = getCombatDuration();
+        
+        String context = "Combat situation: " + combatContext + 
+                        ". Current DPS: " + currentDPS + 
+                        ". Efficiency: " + (efficiency * 100) + "%" +
+                        ". Combat duration: " + duration + " seconds" +
+                        ". Provide one tactical recommendation to improve performance.";
+        
+        final String[] recommendation = new String[1];
+        final Object lock = new Object();
+        
+        // Use HybridAI to generate tactical recommendation
+        hybridAI.processQuery(context, null, 0.0f, new HybridAILearningSystem.ResponseCallback() {
+            @Override
+            public void onResponse(String response, String source) {
+                synchronized (lock) {
+                    recommendation[0] = response;
+                    Log.d(TAG, "Tactical recommendation from " + source + ": " + response);
+                    lock.notify();
+                }
+            }
+            
+            @Override
+            public void onError(String error) {
+                synchronized (lock) {
+                    recommendation[0] = "Focus on improving efficiency and DPS. Current performance: " + 
+                                       (efficiency * 100) + "%";
+                    Log.e(TAG, "Error getting tactical recommendation: " + error);
+                    lock.notify();
+                }
+            }
+        });
+        
+        // Wait for response with timeout
+        synchronized (lock) {
+            try {
+                lock.wait(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted while waiting for tactical recommendation", e);
+                recommendation[0] = "Maintain focus and continue current strategy.";
+            }
+        }
+        
+        return recommendation[0] != null ? recommendation[0] : "Continue current tactics.";
     }
     
     /**
