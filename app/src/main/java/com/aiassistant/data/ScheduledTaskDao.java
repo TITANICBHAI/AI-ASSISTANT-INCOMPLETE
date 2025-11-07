@@ -1,4 +1,4 @@
-package com.aiassistant.data.database.dao;
+package com.aiassistant.data;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -11,14 +11,13 @@ import com.aiassistant.data.models.ScheduledTask;
 import java.util.List;
 
 /**
- * DAO for scheduled task entities
+ * Data Access Object for scheduled task entities
  */
 @Dao
 public interface ScheduledTaskDao {
     
     /**
      * Insert a task
-     * 
      * @param task The task
      * @return The new row ID
      */
@@ -27,7 +26,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Update a task
-     * 
      * @param task The task
      */
     @Update
@@ -35,7 +33,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Delete a task
-     * 
      * @param task The task
      */
     @Delete
@@ -43,7 +40,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Get a task by ID
-     * 
      * @param id The ID
      * @return The task
      */
@@ -52,15 +48,13 @@ public interface ScheduledTaskDao {
     
     /**
      * Get all tasks
-     * 
-     * @return The tasks
+     * @return The tasks ordered by scheduled time
      */
     @Query("SELECT * FROM scheduled_tasks ORDER BY scheduledTime ASC")
     List<ScheduledTask> getAllTasks();
     
     /**
      * Get active tasks
-     * 
      * @return The tasks
      */
     @Query("SELECT * FROM scheduled_tasks WHERE isActive = 1 AND isCompleted = 0 ORDER BY scheduledTime ASC")
@@ -68,7 +62,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Get tasks due before a time
-     * 
      * @param timestamp The cutoff timestamp
      * @return The tasks
      */
@@ -77,7 +70,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Get tasks of a type
-     * 
      * @param taskType The task type
      * @return The tasks
      */
@@ -86,7 +78,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Count active tasks
-     * 
      * @return The count
      */
     @Query("SELECT COUNT(*) FROM scheduled_tasks WHERE isActive = 1 AND isCompleted = 0")
@@ -94,7 +85,6 @@ public interface ScheduledTaskDao {
     
     /**
      * Delete old tasks
-     * 
      * @param timestamp The cutoff timestamp
      * @return The number of rows deleted
      */

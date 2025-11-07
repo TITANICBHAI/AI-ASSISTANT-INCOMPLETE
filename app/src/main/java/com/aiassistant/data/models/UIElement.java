@@ -3,21 +3,39 @@ package com.aiassistant.data.models;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.aiassistant.data.converters.Converters;
+
 /**
- * Represents a UI element in the game
+ * Represents a UI element in the game - Room entity
  */
+@Entity(tableName = "ui_elements")
+@TypeConverters(Converters.class)
 public class UIElement {
     
+    @PrimaryKey(autoGenerate = true)
     private long id;
+    
+    private String elementId;
+    private String screenId;
     private String type;
     private String text;
+    private String className;
     private float x;
     private float y;
     private float width;
     private float height;
     private boolean interactive;
     private boolean visible;
+    private boolean isClickable;
+    private boolean isEditable;
     private String imageContentDescription;
+    
+    @Ignore
     private Rect boundingBox;
     
     /**
@@ -53,7 +71,6 @@ public class UIElement {
     
     /**
      * Get ID
-     * 
      * @return The ID
      */
     public long getId() {
@@ -62,7 +79,6 @@ public class UIElement {
     
     /**
      * Set ID
-     * 
      * @param id The ID
      */
     public void setId(long id) {
@@ -70,8 +86,39 @@ public class UIElement {
     }
     
     /**
+     * Get element ID
+     * @return The element ID
+     */
+    public String getElementId() {
+        return elementId;
+    }
+    
+    /**
+     * Set element ID
+     * @param elementId The element ID
+     */
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
+    }
+    
+    /**
+     * Get screen ID
+     * @return The screen ID
+     */
+    public String getScreenId() {
+        return screenId;
+    }
+    
+    /**
+     * Set screen ID
+     * @param screenId The screen ID
+     */
+    public void setScreenId(String screenId) {
+        this.screenId = screenId;
+    }
+    
+    /**
      * Get type
-     * 
      * @return The type
      */
     public String getType() {
@@ -80,11 +127,26 @@ public class UIElement {
     
     /**
      * Set type
-     * 
      * @param type The type
      */
     public void setType(String type) {
         this.type = type;
+    }
+    
+    /**
+     * Get class name
+     * @return The class name
+     */
+    public String getClassName() {
+        return className;
+    }
+    
+    /**
+     * Set class name
+     * @param className The class name
+     */
+    public void setClassName(String className) {
+        this.className = className;
     }
     
     /**
@@ -210,11 +272,42 @@ public class UIElement {
     
     /**
      * Set visible
-     * 
      * @param visible Whether visible
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+    
+    /**
+     * Check if clickable
+     * @return True if clickable
+     */
+    public boolean isClickable() {
+        return isClickable;
+    }
+    
+    /**
+     * Set clickable
+     * @param clickable Whether clickable
+     */
+    public void setClickable(boolean clickable) {
+        isClickable = clickable;
+    }
+    
+    /**
+     * Check if editable
+     * @return True if editable
+     */
+    public boolean isEditable() {
+        return isEditable;
+    }
+    
+    /**
+     * Set editable
+     * @param editable Whether editable
+     */
+    public void setEditable(boolean editable) {
+        isEditable = editable;
     }
     
     /**
