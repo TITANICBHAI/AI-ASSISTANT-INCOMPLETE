@@ -13,7 +13,10 @@ import com.aiassistant.core.ai.neural.SyntheticVoiceModel;
 import com.aiassistant.core.ai.neural.TacticalAnalysisModel;
 import com.aiassistant.core.ai.neural.VoiceBiometricModel;
 import com.aiassistant.core.ai.neural.inference.ModelInferenceManager;
+import com.aiassistant.services.GroqApiService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -26,12 +29,16 @@ public class AIStateManager {
     // Singleton instance
     private static AIStateManager instance;
     
+    // Static application context for getInstance() without parameters
+    private static volatile Context applicationContext;
+    
     // Context
     private final Context context;
     
     // Model managers
     private final NeuralNetworkManager neuralNetworkManager;
     private final ModelInferenceManager inferenceManager;
+    private final GroqApiService groqApiService;
     
     // Neural model names
     private static final String VOICE_BIOMETRIC_MODEL = "voice_biometric";
@@ -58,14 +65,34 @@ public class AIStateManager {
         this.context = context.getApplicationContext();
         this.neuralNetworkManager = NeuralNetworkManager.getInstance(context);
         this.inferenceManager = ModelInferenceManager.getInstance(context);
+        this.groqApiService = GroqApiService.getInstance(context);
     }
     
     /**
-     * Get singleton instance
+     * Get singleton instance (requires context to be initialized first via getInstance(Context))
+     * @return AIStateManager instance
+     * @throws IllegalStateException if getInstance(Context) has not been called yet
+     */
+    public static synchronized AIStateManager getInstance() {
+        if (applicationContext == null) {
+            throw new IllegalStateException(
+                "AIStateManager not initialized. Call getInstance(Context) first.");
+        }
+        if (instance == null) {
+            instance = new AIStateManager(applicationContext);
+        }
+        return instance;
+    }
+    
+    /**
+     * Get singleton instance with context
      * @param context Application context
      * @return AIStateManager instance
      */
     public static synchronized AIStateManager getInstance(Context context) {
+        if (context != null && applicationContext == null) {
+            applicationContext = context.getApplicationContext();
+        }
         if (instance == null) {
             instance = new AIStateManager(context);
         }
@@ -492,11 +519,129 @@ public class AIStateManager {
     }
     
     /**
+     * Generate AI text response using Groq API
+     * @param prompt User prompt
+     * @param callback Callback for result
+     */
+    public void generateTextResponse(String prompt, GroqApiService.ChatCompletionCallback callback) {
+        groqApiService.chatCompletion(prompt, callback);
+    }
+    
+    /**
+     * Generate AI text response with conversation history using Groq API
+     * @param messages Conversation messages
+     * @param callback Callback for result
+     */
+    public void generateTextResponseWithHistory(List<GroqApiService.ChatMessage> messages, 
+                                                 GroqApiService.ChatCompletionCallback callback) {
+        groqApiService.chatCompletion(messages, "llama-3.3-70b-versatile", callback);
+    }
+    
+    /**
+     * Generate streaming AI text response using Groq API
+     * @param prompt User prompt
+     * @param callback Callback for streaming result
+     */
+    public void generateStreamingResponse(String prompt, GroqApiService.StreamingCallback callback) {
+        groqApiService.chatCompletionStreaming(prompt, callback);
+    }
+    
+    /**
+     * Process voice command using Groq API
+     * @param voiceCommand Voice command text
+     * @param callback Callback for result
+     */
+    public void processVoiceCommand(String voiceCommand, GroqApiService.ChatCompletionCallback callback) {
+        List<GroqApiService.ChatMessage> messages = new ArrayList<>();
+        messages.add(new GroqApiService.ChatMessage("system", 
+            "You are an AI assistant helping with voice commands. Be concise and helpful."));
+        messages.add(new GroqApiService.ChatMessage("user", voiceCommand));
+        
+        groqApiService.chatCompletion(messages, "llama-3.3-70b-versatile", callback);
+    }
+    
+    /**
+     * Generate call handling response using Groq API
+     * @param callerName Caller's name (if available)
+     * @param conversationHistory Previous conversation messages
+     * @param currentInput Current caller input
+     * @param callback Callback for result
+     */
+    public void generateCallResponse(String callerName, List<GroqApiService.ChatMessage> conversationHistory, 
+                                     String currentInput, GroqApiService.ChatCompletionCallback callback) {
+        List<GroqApiService.ChatMessage> messages = new ArrayList<>();
+        
+        String systemPrompt = "You are an AI assistant handling a phone call" + 
+                             (callerName != null ? " with " + callerName : "") + 
+                             ". Be polite, professional, and helpful. Keep responses brief and conversational.";
+        messages.add(new GroqApiService.ChatMessage("system", systemPrompt));
+        
+        if (conversationHistory != null) {
+            messages.addAll(conversationHistory);
+        }
+        
+        messages.add(new GroqApiService.ChatMessage("user", currentInput));
+        
+        groqApiService.chatCompletion(messages, "llama-3.3-70b-versatile", callback);
+    }
+    
+    /**
+     * Solve JEE problem using Groq API
+     * @param problemText Problem text
+     * @param callback Callback for result
+     */
+    public void solveJEEProblem(String problemText, GroqApiService.ChatCompletionCallback callback) {
+        List<GroqApiService.ChatMessage> messages = new ArrayList<>();
+        messages.add(new GroqApiService.ChatMessage("system", 
+            "You are an expert in JEE (Joint Entrance Examination) preparation. " +
+            "Solve problems step-by-step with clear explanations. " +
+            "Cover Physics, Chemistry, and Mathematics topics."));
+        messages.add(new GroqApiService.ChatMessage("user", problemText));
+        
+        groqApiService.chatCompletion(messages, "llama-3.3-70b-versatile", callback);
+    }
+    
+    /**
+     * Generate decision-making response using Groq API
+     * @param situationDescription Description of the situation
+     * @param options Available options
+     * @param callback Callback for result
+     */
+    public void getDecisionMakingAdvice(String situationDescription, List<String> options, 
+                                       GroqApiService.ChatCompletionCallback callback) {
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("Situation: ").append(situationDescription).append("\n\n");
+        prompt.append("Available options:\n");
+        
+        for (int i = 0; i < options.size(); i++) {
+            prompt.append((i + 1)).append(". ").append(options.get(i)).append("\n");
+        }
+        
+        prompt.append("\nAnalyze the situation and recommend the best option with reasoning.");
+        
+        List<GroqApiService.ChatMessage> messages = new ArrayList<>();
+        messages.add(new GroqApiService.ChatMessage("system", 
+            "You are an AI decision-making assistant. Provide clear, logical analysis and recommendations."));
+        messages.add(new GroqApiService.ChatMessage("user", prompt.toString()));
+        
+        groqApiService.chatCompletion(messages, "llama-3.3-70b-versatile", callback);
+    }
+    
+    /**
+     * Get Groq API service instance
+     * @return GroqApiService instance
+     */
+    public GroqApiService getGroqApiService() {
+        return groqApiService;
+    }
+    
+    /**
      * Release resources
      */
     public void release() {
         Log.d(TAG, "Releasing AI resources");
         neuralNetworkManager.releaseAll();
+        groqApiService.shutdown();
         isInitialized = false;
     }
     

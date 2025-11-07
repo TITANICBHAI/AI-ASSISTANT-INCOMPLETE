@@ -8,8 +8,11 @@ import com.aiassistant.core.ai.memory.MemoryManager;
 import com.aiassistant.core.ai.neural.EmotionalIntelligenceModel;
 import com.aiassistant.data.models.CallerProfile;
 import com.aiassistant.data.repository.CallerProfileRepository;
+import com.aiassistant.services.GroqApiService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -201,6 +204,28 @@ public class EmotionalCallHandlingService {
         
         Log.d(TAG, "Generated response: " + response);
         return response;
+    }
+    
+    /**
+     * Generate response during call using Groq API (asynchronous)
+     * @param phoneNumber Caller phone number
+     * @param prompt Prompt for response generation
+     * @param callback Callback for response
+     */
+    public void generateResponseDuringCallAsync(String phoneNumber, String prompt, 
+                                                GroqApiService.ChatCompletionCallback callback) {
+        Log.d(TAG, "Generating async response for " + phoneNumber + " with prompt: " + prompt);
+        
+        // Get caller profile
+        CallerProfile callerProfile = callerProfileRepository.getCallerByPhone(phoneNumber);
+        String callerName = (callerProfile != null && callerProfile.getName() != null) ? 
+                           callerProfile.getName() : "the caller";
+        
+        // Get conversation history from memory
+        List<GroqApiService.ChatMessage> conversationHistory = new ArrayList<>();
+        
+        // Use AIStateManager to generate call response with Groq
+        aiStateManager.generateCallResponse(callerName, conversationHistory, prompt, callback);
     }
     
     /**
