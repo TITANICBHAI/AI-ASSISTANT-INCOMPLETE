@@ -72,4 +72,34 @@
     <string name="voice_command_processing">Processing command...</string>
     <string name="voice_command_action">Command: %s</string>
     <string name="voice_command_error">Voice command error</string>
+    
+    <!-- Voice Teaching -->
+    <string name="voice_teaching_title">Voice Teaching Lab</string>
+    <string name="voice_teaching_intro">Teach the AI voice commands with gestures</string>
+    <string name="voice_teaching_record">Record Voice</string>
+    <string name="voice_teaching_save">Save Action</string>
+    <string name="voice_teaching_clear">Clear Canvas</string>
+    <string name="voice_teaching_saved">Voice action saved successfully</string>
+    <string name="voice_teaching_error">Error saving voice action</string>
+    
+    <!-- Image Labeling -->
+    <string name="image_labeling_title">Image Labeling Lab</string>
+    <string name="image_labeling_intro">Label images to train AI models</string>
+    <string name="image_labeling_capture">Capture Image</string>
+    <string name="image_labeling_select">Select from Gallery</string>
+    <string name="image_labeling_save">Save Label</string>
+    <string name="image_labeling_saved">Image label saved successfully</string>
+    <string name="image_labeling_error">Error saving image label</string>
+    
+    <!-- AI Orchestration -->
+    <string name="orchestration_title">AI Orchestration Demo</string>
+    <string name="orchestration_running">Coordinated AI system running...</string>
+    <string name="orchestration_complete">Orchestration demo complete</string>
+    <string name="orchestration_error">Error in orchestration system</string>
+    
+    <!-- Groq API -->
+    <string name="groq_api_key_required">Groq API key required</string>
+    <string name="groq_api_processing">AI processing your request...</string>
+    <string name="groq_api_success">AI response received</string>
+    <string name="groq_api_error">Error communicating with AI</string>
 </resources>
