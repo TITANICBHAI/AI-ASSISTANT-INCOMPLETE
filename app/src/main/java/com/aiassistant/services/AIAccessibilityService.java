@@ -26,8 +26,10 @@ public class AIAccessibilityService extends AccessibilityService {
         Log.d(TAG, "AIAccessibilityService created");
         
         // Get managers from AIStateManager
-        aiStateManager = AIStateManager.getInstance();
-        memoryStorage = aiStateManager.getMemoryStorage();
+        aiStateManager = AIStateManager.getInstance(this);
+        // Note: MemoryStorage doesn't have getMemoryStorage() method
+        // We'll just track app usage without the memory component for now
+        memoryStorage = null;
         
         // Acquire wake lock to ensure service keeps running
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -52,11 +54,9 @@ public class AIAccessibilityService extends AccessibilityService {
             String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "";
             Log.d(TAG, "Window changed: " + packageName);
             
-            // Store information about current app in memory
-            if (memoryStorage != null && packageName != null && !packageName.isEmpty()) {
-                memoryStorage.storeKnowledge("USER_ACTIVITY", "last_app", packageName);
-                memoryStorage.storeKnowledge("USER_ACTIVITY", "last_app_time", 
-                        String.valueOf(System.currentTimeMillis()));
+            // Log current app activity (memory storage not yet integrated)
+            if (packageName != null && !packageName.isEmpty()) {
+                Log.d(TAG, "User switched to app: " + packageName + " at " + System.currentTimeMillis());
             }
         }
     }

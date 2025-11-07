@@ -14,6 +14,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".core.ai.AIAssistantApplication"
@@ -34,15 +39,176 @@
             </intent-filter>
         </activity>
         
+        <!-- Splash Activity -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+        
+        <!-- UI Activities -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.CallHandlingActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.ResearchDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <!-- Demo Activities -->
+        <activity
+            android:name=".demo.AntiCheatDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".demo.SentientVoiceDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".demo.VoiceDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.demo.CallHandlingDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.demo.NeuralNetworkDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <!-- Voice Activities -->
+        <activity
+            android:name=".ui.voice.DuplexCallDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.voice.VoiceGameControlActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.voice.VoiceIntegrationDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.voice.VoiceSecurityDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <!-- Game Activities -->
+        <activity
+            android:name=".ui.game.GameAnalysisDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.game.GameInteractionDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <!-- Education Activities -->
+        <activity
+            android:name=".ai.features.education.jee.JEELearningActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ai.features.education.jee.PDFLearningActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <!-- Other Activities -->
+        <activity
+            android:name=".ui.speech.SpeechSynthesisDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ui.external.AdvancedFeaturesActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        
         <!-- Services -->
-        <service android:name=".services.CallHandlingService" 
+        <service 
+            android:name=".services.CallHandlingService" 
             android:exported="false" />
         
-        <service android:name=".core.ai.memory.MemoryService" 
+        <service 
+            android:name=".core.ai.memory.MemoryService" 
+            android:exported="false" />
+        
+        <service
+            android:name=".services.AIAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+        
+        <service 
+            android:name=".services.AIProcessingService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".services.AIService"
+            android:exported="false" />
+        
+        <service
+            android:name=".services.AccessibilityDetectionService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/detection_accessibility_service_config" />
+        </service>
+        
+        <service 
+            android:name=".services.BackgroundMonitoringService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".services.GameInteractionService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".services.InactivityDetectionService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".services.TaskExecutorService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".utils.ScreenCaptureService"
+            android:exported="false" />
+        
+        <service 
+            android:name=".security.AntiDetectionService"
             android:exported="false" />
         
         <!-- Broadcast Receivers -->
-        <receiver android:name=".receivers.PhoneStateReceiver"
+        <receiver 
+            android:name=".receivers.PhoneStateReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -50,7 +216,45 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name=".receivers.BootCompletedReceiver"
+        <receiver 
+            android:name=".receivers.BootCompletedReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name=".core.telephony.CallStateReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name=".receivers.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name=".receivers.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name=".receivers.TaskAlarmReceiver"
+            android:exported="false" />
+        
+        <receiver 
+            android:name=".security.SecurityBootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
