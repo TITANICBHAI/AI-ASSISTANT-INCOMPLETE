@@ -1,7 +1,7 @@
 # AI Assistant Android Application
 
 ## Overview
-The AI Assistant is an AI-powered Android application designed to offer advanced assistance through integrated AI/ML capabilities. It includes TensorFlow Lite, voice recognition with emotional intelligence, automated call handling, advanced gaming AI assistance (FPS aim assist, tactical AI, game detection), and educational features like JEE learning and PDF processing. The application also incorporates robust security, anti-detection systems, and real-time screen analysis using OpenCV. The long-term goal is to provide a highly intelligent, adaptive, and versatile AI companion for Android users.
+The AI Assistant is an AI-powered Android application designed to offer advanced assistance through integrated AI/ML capabilities. It includes TensorFlow Lite, voice recognition with emotional intelligence, automated call handling, advanced gaming AI assistance (FPS aim assist, tactical AI, game detection), and educational features like JEE learning and PDF processing. The application features a **Coordinated AI Loop System** with automatic triggers, state diff detection, health monitoring, and Groq AI escalation for complex problems. Users can train and customize the AI through **Voice Teaching Lab**, **Image Labeling Lab**, **AI Orchestration Monitor**, and **Pipeline Manager** interfaces. The application also incorporates robust security, anti-detection systems, and real-time screen analysis using OpenCV. The long-term goal is to provide a highly intelligent, adaptive, and versatile AI companion for Android users.
 
 ## User Preferences
 - Build target: APK for local testing in Android Studio
@@ -40,11 +40,13 @@ The UI adheres to standard Android practices using Activities and Fragments. The
 - **Call Features:** `BusinessCallHandler` with `BusinessNegotiationEngine`, `ServiceBookingManager`, and `CallerProfileRepository`.
 - **Receivers:** `PhoneStateReceiver`, `CallStateReceiver`, and `BootCompletedReceiver`.
 
-**5. Educational Features:**
+**5. Educational & User-Assistive Features:**
 - **JEE Learning:** `JEELearningActivity` and `PDFLearningActivity` supported by `PDFLearningManager`, `NumericalAnalyzer`, `SymbolicMathEngine`, and `SentientLearningSystem`.
-- **Voice Teaching:** `VoiceTeachingActivity` allows teaching AI using voice commands and gestures, integrating Groq API for intent understanding and database persistence.
-- **Image Labeling:** `ImageLabelingActivity` facilitates AI-assisted image labeling with camera/gallery integration, Groq API suggestions, and database persistence.
-- **Learning Database:** Five new Room entities (`VoiceSampleEntity`, `GestureSampleEntity`, `ImageSampleEntity`, `LabelDefinitionEntity`, `ModelInfoEntity`) with corresponding DAOs and `LearningRepository` for persistence.
+- **Voice Teaching Lab:** `VoiceTeachingActivity` allows teaching AI using voice commands and gestures, integrating Groq API for intent understanding and database persistence.
+- **Image Labeling Lab:** `ImageLabelingActivity` facilitates AI-assisted image labeling with camera/gallery integration, Groq API suggestions, and database persistence.
+- **AI Orchestration Monitor:** `OrchestrationDemoActivity` provides real-time monitoring of the coordinated AI loop system with component status, event streaming, health monitoring, and Groq problem-solving test interface.
+- **Pipeline Manager:** `PipelineManagerActivity` enables users to customize AI component execution sequences with drag-and-drop reordering, create custom pipelines, configure triggers, and save configurations.
+- **Learning Database:** Five Room entities (`VoiceSampleEntity`, `GestureSampleEntity`, `ImageSampleEntity`, `LabelDefinitionEntity`, `ModelInfoEntity`) with corresponding DAOs and `LearningRepository` for persistence.
 
 **6. Security & Anti-Detection:**
 - **Security Systems:** `SecurityProtectionSystem`, `AntiDetectionManager`, `AntiDetectionService`, `AccessControl`, `SignatureVerifier`, and `MLThreatDetectorImpl`.
@@ -79,3 +81,35 @@ The UI adheres to standard Android practices using Activities and Fragments. The
 - **Min SDK:** 24
 - **Java Compatibility:** 8
 - **AAPT Options:** `noCompress "tflite"`
+
+## Recent Changes (November 7, 2025)
+
+### Coordinated AI Loop System
+- **CentralAIOrchestrator:** Event-driven orchestration service with automatic triggers (screen_change, voice_detected, periodic, component_error, health_check_failed)
+- **DiffEngine:** Automatic state difference detection
+- **HealthMonitor:** Continuous health checks with circuit breaker pattern
+- **ProblemSolvingBroker:** Groq AI escalation for complex problems
+- **OrchestrationScheduler:** Pipeline execution management (sequential & parallel)
+
+### User-Assistive Interfaces
+- **OrchestrationDemoActivity:** Real-time monitoring UI with service binding, component registry viewer, live event stream, health score display
+- **PipelineManagerActivity:** Drag-and-drop pipeline customization with `PipelineAdapter` for selection, `PipelineStageAdapter` for reordering, JSON persistence
+- **VoiceTeachingActivity:** Groq-powered intent understanding, gesture recording, database persistence
+- **ImageLabelingActivity:** Groq-assisted label analysis, vision integration, database persistence
+
+### Groq AI Integration
+- **GroqApiService:** Singleton service with streaming and non-streaming completions
+- **GroqApiKeyManager:** Environment variable support (`GROQ_API_KEY`), Android Keystore encryption, SharedPreferences fallback
+- **Model:** `llama-3.3-70b-versatile`
+- **Usage:** Voice intent understanding, label analysis, problem solving escalation
+
+### Adapters & UI Components
+- **PipelineAdapter:** Pipeline selection with visual feedback (fixed IndexOutOfBoundsException bug)
+- **PipelineStageAdapter:** Drag-and-drop stage reordering
+- **ComponentStatusAdapter:** Real-time component status display
+- **OrchestrationEventAdapter:** Live event stream viewer
+
+### MainActivity Updates
+- Added navigation buttons for all user-assistive interfaces
+- All activities properly registered in AndroidManifest.xml
+- CentralAIOrchestrator service registered and bindable
