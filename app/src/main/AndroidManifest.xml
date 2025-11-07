@@ -145,6 +145,21 @@
             android:label="Image Labeling Lab"
             android:theme="@style/AppTheme" />
         
+        <!-- Orchestration Activities -->
+        <activity
+            android:name=".ui.OrchestrationDemoActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="AI Orchestration Monitor"
+            android:theme="@style/AppTheme" />
+        
+        <activity
+            android:name=".ui.PipelineManagerActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="Pipeline Manager"
+            android:theme="@style/AppTheme" />
+        
         <!-- Other Activities -->
         <activity
             android:name=".ui.speech.SpeechSynthesisDemoActivity"

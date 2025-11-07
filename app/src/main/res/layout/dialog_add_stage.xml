@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Component Name"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
+    
+    <EditText
+        android:id="@+id/componentNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g., ScreenCapture, GameAnalyzer"
+        android:inputType="text"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Criticality"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp"/>
+    
+    <Spinner
+        android:id="@+id/criticalitySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Critical: Pipeline fails if this stage fails\nNon-Critical: Pipeline continues even if this stage fails"
+        android:textSize="12sp"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/darker_gray"/>
+</LinearLayout>

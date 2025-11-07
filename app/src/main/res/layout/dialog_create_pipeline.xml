@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pipeline Name"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
+    
+    <EditText
+        android:id="@+id/pipelineNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g., custom_game_analysis"
+        android:inputType="text"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Execution Type"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp"/>
+    
+    <Spinner
+        android:id="@+id/pipelineTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sequential: Components run one after another\nParallel: Components run simultaneously"
+        android:textSize="12sp"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/darker_gray"/>
+</LinearLayout>

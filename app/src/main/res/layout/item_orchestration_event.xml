@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
+    
+    <TextView
+        android:id="@+id/eventTimeTextView"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="12:34:56"
+        android:textSize="10sp"
+        android:textColor="@android:color/darker_gray"/>
+    
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+        
+        <TextView
+            android:id="@+id/eventTypeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Type"
+            android:textStyle="bold"
+            android:textSize="12sp"/>
+        
+        <TextView
+            android:id="@+id/eventSourceTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Source"
+            android:textSize="10sp"
+            android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pipeline Manager"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Manage AI component execution sequences. Drag to reorder stages."
+        android:textSize="14sp"
+        android:paddingBottom="16dp"
+        android:gravity="center"/>
+    
+    <TextView
+        android:id="@+id/currentPipelineTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No pipeline selected"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@color/primary_light"
+        android:textColor="@android:color/white"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        
+        <Button
+            android:id="@+id/createPipelineButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="Create Pipeline"/>
+        
+        <Button
+            android:id="@+id/savePipelineButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Save Pipeline"
+            android:enabled="false"/>
+    </LinearLayout>
+    
+    <Button
+        android:id="@+id/addStageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Add Stage"
+        android:enabled="false"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pipeline Stages (Drag to Reorder)"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"/>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stagesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/background_very_light"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available Pipelines"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"/>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pipelinesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/background_very_light"/>
+</LinearLayout>

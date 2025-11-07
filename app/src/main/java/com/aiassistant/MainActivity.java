@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonVoiceTeaching;
     private Button buttonImageLabeling;
     private Button buttonOrchestrationDemo;
+    private Button buttonPipelineManager;
     
     // Components
     private AIStateManager aiStateManager;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         buttonVoiceTeaching = findViewById(R.id.buttonVoiceTeaching);
         buttonImageLabeling = findViewById(R.id.buttonImageLabeling);
         buttonOrchestrationDemo = findViewById(R.id.buttonOrchestrationDemo);
+        buttonPipelineManager = findViewById(R.id.buttonPipelineManager);
         
         // Initialize components (but don't fail if VoiceManager has issues)
         try {
@@ -89,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
         testVoiceButton.setOnClickListener(v -> testVoice());
         buttonVoiceTeaching.setOnClickListener(v -> openVoiceTeaching());
         buttonImageLabeling.setOnClickListener(v -> openImageLabeling());
-        buttonOrchestrationDemo.setOnClickListener(v -> runOrchestrationDemo());
+        buttonOrchestrationDemo.setOnClickListener(v -> openOrchestrationDemo());
+        buttonPipelineManager.setOnClickListener(v -> openPipelineManager());
     }
     
     /**
@@ -149,12 +152,21 @@ public class MainActivity extends AppCompatActivity {
     }
     
     /**
-     * Run Coordinated AI Loop System Demo
+     * Open Orchestration Demo Activity - Monitor the coordinated AI loop system
      */
-    private void runOrchestrationDemo() {
-        com.aiassistant.examples.CoordinatedLoopDemo.runDemo(this);
-        statusTextView.setText("Orchestration demo running - check logs");
-        Log.d(TAG, "Running orchestration demo");
+    private void openOrchestrationDemo() {
+        Intent intent = new Intent(this, com.aiassistant.ui.OrchestrationDemoActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Orchestration Demo Activity");
+    }
+    
+    /**
+     * Open Pipeline Manager - Configure AI component sequences
+     */
+    private void openPipelineManager() {
+        Intent intent = new Intent(this, com.aiassistant.ui.PipelineManagerActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Pipeline Manager Activity");
     }
     
     @Override
