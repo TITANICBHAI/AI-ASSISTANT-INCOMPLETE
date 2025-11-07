@@ -9,7 +9,9 @@ import androidx.room.RoomDatabase;
 import com.aiassistant.data.models.AIAction;
 import com.aiassistant.data.models.CallerProfile;
 import com.aiassistant.data.models.GameState;
+import com.aiassistant.data.models.ScheduledTask;
 import com.aiassistant.data.models.ScreenActionEntity;
+import com.aiassistant.data.models.Task;
 import com.aiassistant.data.models.TouchPath;
 import com.aiassistant.data.models.UIElement;
 
@@ -21,11 +23,13 @@ import com.aiassistant.data.models.UIElement;
         AIAction.class,
         CallerProfile.class,
         GameState.class,
+        ScheduledTask.class,
         ScreenActionEntity.class,
+        Task.class,
         TouchPath.class,
         UIElement.class
     },
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -88,4 +92,16 @@ public abstract class AppDatabase extends RoomDatabase {
      * @return CallerProfileDao
      */
     public abstract CallerProfileDao callerProfileDao();
+
+    /**
+     * Abstract method to access the TaskDao
+     * @return TaskDao
+     */
+    public abstract TaskDao taskDao();
+
+    /**
+     * Abstract method to access the ScheduledTaskDao
+     * @return ScheduledTaskDao
+     */
+    public abstract ScheduledTaskDao scheduledTaskDao();
 }
