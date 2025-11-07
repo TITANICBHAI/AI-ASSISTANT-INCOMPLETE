@@ -46,6 +46,9 @@ public class AIAssistantApplication extends Application {
         // Start call handling service if permissions are granted
         startService(new Intent(this, CallHandlingService.class));
         
+        // Start Central AI Orchestrator for coordinated loop system
+        startService(new Intent(this, com.aiassistant.core.orchestration.CentralAIOrchestrator.class));
+        
         Log.d(TAG, "AI Assistant Application initialized successfully");
     }
     

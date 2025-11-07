@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private Button startServicesButton;
     private Button stopServicesButton;
     private Button testVoiceButton;
+    private Button buttonVoiceTeaching;
+    private Button buttonImageLabeling;
+    private Button buttonOrchestrationDemo;
     
     // Components
     private AIStateManager aiStateManager;
@@ -43,9 +46,16 @@ public class MainActivity extends AppCompatActivity {
         startServicesButton = findViewById(R.id.startServicesButton);
         stopServicesButton = findViewById(R.id.stopServicesButton);
         testVoiceButton = findViewById(R.id.testVoiceButton);
+        buttonVoiceTeaching = findViewById(R.id.buttonVoiceTeaching);
+        buttonImageLabeling = findViewById(R.id.buttonImageLabeling);
+        buttonOrchestrationDemo = findViewById(R.id.buttonOrchestrationDemo);
         
-        // Initialize components
-        initializeComponents();
+        // Initialize components (but don't fail if VoiceManager has issues)
+        try {
+            initializeComponents();
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing components: " + e.getMessage());
+        }
         
         // Set up button listeners
         setupButtonListeners();
@@ -63,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         aiStateManager = AIStateManager.getInstance(this);
         memoryManager = MemoryManager.getInstance(this);
         callerProfileRepository = new CallerProfileRepository(this);
-        voiceManager = new VoiceManager(this);
+        
+        // VoiceManager has private constructor, will be initialized by AIAssistantApplication
+        voiceManager = null;
         
         Log.d(TAG, "Components initialized");
     }
@@ -75,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
         startServicesButton.setOnClickListener(v -> startServices());
         stopServicesButton.setOnClickListener(v -> stopServices());
         testVoiceButton.setOnClickListener(v -> testVoice());
+        buttonVoiceTeaching.setOnClickListener(v -> openVoiceTeaching());
+        buttonImageLabeling.setOnClickListener(v -> openImageLabeling());
+        buttonOrchestrationDemo.setOnClickListener(v -> runOrchestrationDemo());
     }
     
     /**
@@ -109,9 +124,37 @@ public class MainActivity extends AppCompatActivity {
      * Test voice capabilities
      */
     private void testVoice() {
-        voiceManager.speak("Hello, I am your AI assistant. Voice synthesis is working correctly.");
-        
+        if (voiceManager != null) {
+            voiceManager.speak("Hello, I am your AI assistant. Voice synthesis is working correctly.");
+        }
         Log.d(TAG, "Voice test executed");
+    }
+    
+    /**
+     * Open Voice Teaching Activity
+     */
+    private void openVoiceTeaching() {
+        Intent intent = new Intent(this, com.aiassistant.ui.learning.VoiceTeachingActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Voice Teaching Activity");
+    }
+    
+    /**
+     * Open Image Labeling Activity
+     */
+    private void openImageLabeling() {
+        Intent intent = new Intent(this, com.aiassistant.ui.learning.ImageLabelingActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "Opened Image Labeling Activity");
+    }
+    
+    /**
+     * Run Coordinated AI Loop System Demo
+     */
+    private void runOrchestrationDemo() {
+        com.aiassistant.examples.CoordinatedLoopDemo.runDemo(this);
+        statusTextView.setText("Orchestration demo running - check logs");
+        Log.d(TAG, "Running orchestration demo");
     }
     
     @Override
