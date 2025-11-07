@@ -45,6 +45,7 @@ public class ResearchManager {
     private Context context;
     private AIStateManager aiStateManager;
     private ExecutorService executor;
+    private ExecutorService networkExecutor;
     
     // Research settings
     private int maxConcurrentResearch = 3;
@@ -100,6 +101,7 @@ public class ResearchManager {
         this.context = context.getApplicationContext();
         this.aiStateManager = AIStateManager.getInstance(context);
         this.executor = Executors.newFixedThreadPool(maxConcurrentResearch);
+        this.networkExecutor = Executors.newFixedThreadPool(5);
     }
     
     public static synchronized ResearchManager getInstance(Context context) {
@@ -212,7 +214,7 @@ public class ResearchManager {
         // Step 2: Retrieve and process content from sources
         List<Future<SourceInfo>> contentFutures = new ArrayList<>();
         for (SourceInfo source : sources) {
-            contentFutures.add(executor.submit(new ContentRetrievalTask(source)));
+            contentFutures.add(networkExecutor.submit(new ContentRetrievalTask(source)));
         }
         
         // Wait for all content to be retrieved (with timeout)
@@ -248,7 +250,7 @@ public class ResearchManager {
      * Search for relevant sources for a query
      */
     private List<SourceInfo> searchForSources(String query) {
-        Future<List<SourceInfo>> searchFuture = executor.submit(new SearchTask(query));
+        Future<List<SourceInfo>> searchFuture = networkExecutor.submit(new SearchTask(query));
         
         try {
             return searchFuture.get(researchTimeoutSeconds, TimeUnit.SECONDS);
@@ -1095,6 +1097,9 @@ public class ResearchManager {
     public void shutdown() {
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
+        }
+        if (networkExecutor != null && !networkExecutor.isShutdown()) {
+            networkExecutor.shutdown();
         }
     }
 }
