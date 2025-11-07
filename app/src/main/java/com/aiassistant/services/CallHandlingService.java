@@ -13,7 +13,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.aiassistant.core.ai.call.EmotionalCallHandlingService;
-import com.aiassistant.voice.VoiceManager;
+import com.aiassistant.core.voice.VoiceManager;
 
 /**
  * Service for handling phone calls

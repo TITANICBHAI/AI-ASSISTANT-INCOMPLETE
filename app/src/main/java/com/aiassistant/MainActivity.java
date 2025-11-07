@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.aiassistant.core.ai.AIStateManager;
 import com.aiassistant.core.ai.memory.MemoryManager;
-import com.aiassistant.core.data.repository.CallerProfileRepository;
+import com.aiassistant.data.repository.CallerProfileRepository;
 import com.aiassistant.services.CallHandlingService;
-import com.aiassistant.voice.VoiceManager;
+import com.aiassistant.core.voice.VoiceManager;
 
 /**
  * Main activity for the AI Assistant application

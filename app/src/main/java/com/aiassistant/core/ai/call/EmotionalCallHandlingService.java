@@ -6,8 +6,8 @@ import android.util.Log;
 import com.aiassistant.core.ai.AIStateManager;
 import com.aiassistant.core.ai.memory.MemoryManager;
 import com.aiassistant.core.ai.neural.EmotionalIntelligenceModel;
-import com.aiassistant.core.data.model.CallerProfile;
-import com.aiassistant.core.data.repository.CallerProfileRepository;
+import com.aiassistant.data.models.CallerProfile;
+import com.aiassistant.data.repository.CallerProfileRepository;
 
 import java.util.HashMap;
 import java.util.Map;
